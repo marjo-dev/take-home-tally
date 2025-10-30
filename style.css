@@ -1,0 +1,224 @@
+/* ---------- Base ---------- */
+body {
+  font-family: system-ui, sans-serif;
+  background: #121212;
+  color: #e5e5e5;
+  margin: 0;
+  padding: 0;
+}
+
+.wrap {
+  max-width: 1000px;
+  margin: auto;
+  padding: 24px;
+}
+
+h1,
+h2 {
+  color: #fafafa;
+}
+
+.muted {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+/* ---------- Form Elements ---------- */
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 6px 0;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  background: #2c2c2c;
+  color: #f3f4f6;
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+/* ---------- Buttons ---------- */
+button {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 6px;
+}
+
+.btn-ghost {
+  background: #374151;
+  color: #f3f4f6;
+}
+.btn-ghost:hover {
+  background: #4b5563;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #b91c1c;
+}
+
+.btn-ghost.small {
+  padding: 6px 10px;
+  width: auto;
+  white-space: nowrap;
+}
+
+/* ---------- Layout grids ---------- */
+.grid.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 850px) {
+  .grid.two {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Daily Entry Inline Layout ---------- */
+.entry-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.entry-row label {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Date + Today button inline */
+.date-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ---------- Button Row Layout ---------- */
+.button-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+/* ---------- Tables ---------- */
+.stats-paired {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 28px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.stats-paired > div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 4px;
+}
+
+.stats-paired span,
+.stats-paired strong {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.data-updated {
+  transform: scale(1.08);
+  color: #86efac; /* soft green flash */
+}
+.stats-paired > div:nth-child(odd) {
+  padding-right: 12px;
+}
+
+@media (max-width: 700px) {
+  .stats-paired {
+    grid-template-columns: 1fr;
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+th,
+td {
+  border-bottom: 1px solid #2f2f2f;
+  text-align: center;
+  padding: 10px 6px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+tr:nth-child(even) {
+  background: #1a1a1a;
+}
+
+/* Highlight net values */
+td strong {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+/* Detail table styling */
+.details-table th {
+  background: #2b2b2b;
+  font-weight: 600;
+  font-size: 13px;
+}
+.details-table td {
+  font-size: 13px;
+  padding: 6px 8px;
+}
+.details-table tr:nth-child(even) {
+  background: #242424;
+}
+
+.center {
+  text-align: center;
+}
+
+#stat-net {
+  color: #4ade80; /* same green as table net */
+  font-weight: 700;
+}
+
+#stat-gross {
+  color: #fbbf24; /* amber/gold */
+  font-weight: 700;
+}
