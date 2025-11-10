@@ -4,186 +4,251 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Restaurant Income Tracker</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#121212" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="wrap">
       <h1>🍽️ Restaurant Income Tracker</h1>
-
-      <!-- SETTINGS + ROLE MANAGER -->
-      <div class="grid two">
-        <!-- SETTINGS -->
-        <div class="card">
-          <h2>⚙️ Settings</h2>
-          <label
-            >Tax Rate (%)
-            <input type="number" id="set-tax" step="0.1" />
-          </label>
-          <label
-            >401(k) (% of gross)
-            <input type="number" id="set-k401" step="0.1" />
-          </label>
-          <label
-            >Employer Match (%)
-            <input type="number" id="set-match" step="0.1" />
-          </label>
-          <label
-            >Other Deductions (%)
-            <input type="number" id="set-other" step="0.1" />
-          </label>
-          <button id="save-settings" class="btn-ghost">Save Settings</button>
-          <span class="muted">Saved locally.</span>
-        </div>
-
-        <!-- ROLE MANAGER -->
-        <div class="card">
-          <h2>👤 Role Manager</h2>
-          <label
-            >Role Name
-            <input type="text" id="role-name" placeholder="Server" />
-          </label>
-          <label
-            >Hourly Rate ($)
-            <input
-              type="number"
-              id="role-rate"
-              step="0.01"
-              placeholder="10.00"
-            />
-          </label>
-          <button id="add-role" class="btn-ghost">Add / Update Role</button>
-
-          <div class="table-wrap" style="margin-top: 10px">
-            <table id="roles-table">
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  <th>Hourly Rate</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- DAILY ENTRY -->
-      <div class="card">
-        <h2>🗓️ Daily Entry</h2>
-
-        <div class="entry-row">
-          <label class="date-field">
-            Date
-            <div class="date-input-wrap">
-              <input type="date" id="entry-date" required />
-              <button id="today-btn" type="button" class="btn-ghost small">
-                Today
-              </button>
+      <!-- NAVIGATION BAR FOR MOBILE LAYOUT -->
+      <nav class="top-nav">
+        <button data-page="entry">Daily Entry</button>
+        <button data-page="summary">Weekly Summary</button>
+        <button data-page="settings">Settings</button>
+      </nav>
+      <main>
+        <section id="page-settings" class="page">
+          <!-- SETTINGS + ROLE MANAGER -->
+          <div class="grid two">
+            <!-- SETTINGS -->
+            <div class="card">
+              <h2>⚙️ Settings</h2>
+              <label
+                >Tax Rate (%)
+                <input type="number" id="set-tax" step="0.1" />
+              </label>
+              <label
+                >401(k) (% of gross)
+                <input type="number" id="set-k401" step="0.1" />
+              </label>
+              <label
+                >Employer Match (%)
+                <input type="number" id="set-match" step="0.1" />
+              </label>
+              <label
+                >Other Deductions (%)
+                <input type="number" id="set-other" step="0.1" />
+              </label>
+              <button id="save-settings">Save Settings</button>
+              <span class="muted">Saved locally in your browser.</span>
             </div>
-          </label>
 
-          <label
-            >Role
-            <select id="entry-role"></select>
-          </label>
+            <!-- ROLE MANAGER -->
+            <div class="card">
+              <h2>👤 Role Manager</h2>
+              <label
+                >Role Name
+                <input type="text" id="role-name" placeholder="Server" />
+              </label>
+              <label
+                >Hourly Rate ($)
+                <input
+                  type="number"
+                  id="role-rate"
+                  step="0.01"
+                  placeholder="10.00"
+                />
+              </label>
+              <button id="add-role" class="btn-ghost">Add / Update Role</button>
 
-          <label
-            >Hours Worked
-            <input
-              type="number"
-              id="entry-hours"
-              step="0.1"
-              placeholder="6"
-              required
-            />
-          </label>
-
-          <label
-            >Tips Earned ($)
-            <input type="number" id="entry-tips" step="0.01" placeholder="0" />
-          </label>
-        </div>
-
-        <button id="add-entry" class="btn-ghost">Add Daily Entry</button>
-      </div>
-
-      <!-- WEEKLY SUMMARY -->
-      <div class="card">
-        <h2>📅 Weekly Summary</h2>
-
-        <!-- YTD Total -->
-        <div class="stats-paired">
-          <div>
-            <strong>Total Weeks:</strong> <span id="stat-weeks">0</span>
+              <div class="table-wrap" style="margin-top: 10px">
+                <table id="roles-table">
+                  <thead>
+                    <tr>
+                      <th>Role</th>
+                      <th class="num">Hourly Rate</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="muted">Roles appear in the Daily Entry dropdown.</div>
+            </div>
           </div>
-          <div>
-            <strong>Average Hours Worked per Week:</strong>
-            <span id="avg-hours">0.00 h</span>
-          </div>
+        </section>
+        <section id="page-entry" class="page active">
+          <!-- DAILY ENTRY -->
+          <div class="card entry-card">
+            <h2>🗓️ Daily Entry</h2>
 
-          <div>
-            <strong>Year to Date Gross Income:</strong>
-            <strong id="stat-gross">$0.00</strong>
-          </div>
-          <div>
-            <strong>Average Weekly Gross Income:</strong>
-            <span id="avg-gross">$0.00</span>
-          </div>
+            <form id="daily-entry-form" class="entry-column">
+              <label
+                >Date
+                <div class="date-input-wrap">
+                  <input type="date" id="entry-date" required autofocus />
+                  <button id="today-btn" type="button" class="btn-ghost small">
+                    Today
+                  </button>
+                </div>
+              </label>
 
-          <div>
-            <strong>Year to Date Tax Deducted:</strong>
-            <span id="stat-tax">$0.00</span>
-          </div>
-          <div>
-            <strong>Average Weekly Tax Deducted:</strong>
-            <span id="avg-tax">$0.00</span>
-          </div>
+              <label
+                >Role
+                <select id="entry-role"></select>
+              </label>
 
-          <div>
-            <strong>Year to Date Take-home:</strong>
-            <strong id="stat-net">$0.00</strong>
-          </div>
-          <div>
-            <strong>Average Weekly Take-home:</strong>
-            <span id="avg-net">$0.00</span>
-          </div>
+              <label
+                >Hours Worked
+                <input
+                  type="number"
+                  id="entry-hours"
+                  step="0.1"
+                  placeholder="e.g. 6.5"
+                  required
+                />
+              </label>
 
-          <div>
-            <strong>Year to Date Retirement Contribution:</strong>
-            <span id="stat-retire">$0.00</span>
-          </div>
-          <div>
-            <strong>Average Weekly Retirement Contribution:</strong>
-            <span id="avg-retire">$0.00</span>
-          </div>
-        </div>
+              <label
+                >Credit Card Tips Earned ($)
+                <input
+                  type="number"
+                  id="entry-tips"
+                  step="0.01"
+                  placeholder="Credit tips"
+                />
+              </label>
 
-        <div class="table-wrap">
-          <table id="weekly-table">
-            <thead>
-              <tr>
-                <th>Week</th>
-                <th>Total Hours</th>
-                <th>Total Hourly Pay</th>
-                <th>Total Tips</th>
-                <th>Gross</th>
-                <th>Taxable Income</th>
-                <th>Estimated Tax</th>
-                <th>Net</th>
-                <th>Retirement</th>
-                <th>Employer Match</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
+              <label
+                >Cash Tips Earned ($)
+                <input
+                  type="number"
+                  id="entry-cash"
+                  step="0.01"
+                  placeholder="Cash tips"
+                />
+              </label>
 
-      <!-- EXPORT / RESET -->
+              <label
+                >Tip-Outs ($)
+                <input
+                  type="number"
+                  id="entry-tipouts"
+                  step="0.01"
+                  placeholder="Tip-outs given"
+                />
+              </label>
+
+              <div class="entry-footer">
+                <button id="add-entry" type="button">Add Daily Entry</button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <section id="page-summary" class="page">
+          <!-- WEEKLY SUMMARY -->
+          <div class="card summary-card">
+            <h2>📅 Weekly Summary</h2>
+
+            <!-- Stats Grid (YTD + Averages) -->
+            <div class="stats-paired">
+              <div>
+                <strong>Total Weeks:</strong> <span id="stat-weeks">0</span>
+              </div>
+              <div>
+                <strong>Average Hours/Week:</strong>
+                <span id="avg-hours">0.00 h</span>
+              </div>
+
+              <div>
+                <strong>YTD Gross:</strong> <span id="stat-gross">$0.00</span>
+              </div>
+              <div>
+                <strong>Avg Weekly Gross:</strong>
+                <span id="avg-gross">$0.00</span>
+              </div>
+
+              <div>
+                <strong>YTD Tax:</strong> <span id="stat-tax">$0.00</span>
+              </div>
+              <div>
+                <strong>Avg Weekly Tax:</strong> <span id="avg-tax">$0.00</span>
+              </div>
+
+              <div>
+                <strong>YTD Retirement:</strong>
+                <span id="stat-retire">$0.00</span>
+              </div>
+              <div>
+                <strong>Avg Weekly Retirement:</strong>
+                <span id="avg-retire">$0.00</span>
+              </div>
+
+              <div>
+                <strong>YTD Net:</strong> <span id="stat-net">$0.00</span>
+              </div>
+              <div>
+                <strong>Avg Weekly Net:</strong> <span id="avg-net">$0.00</span>
+              </div>
+
+              <div>
+                <strong>YTD Tip-Outs:</strong>
+                <span id="stat-tipouts">$0.00</span>
+              </div>
+              <div>
+                <strong>Avg Weekly Tip-Outs:</strong>
+                <span id="avg-tipouts">$0.00</span>
+              </div>
+
+              <div>
+                <strong>YTD Take-Home:</strong>
+                <span id="stat-takehome">$0.00</span>
+              </div>
+              <div>
+                <strong>Avg Weekly Take-Home:</strong>
+                <span id="avg-takehome">$0.00</span>
+              </div>
+            </div>
+
+            <!-- Weekly Summary Table -->
+            <div class="table-wrap">
+              <table id="weekly-table">
+                <thead>
+                  <tr>
+                    <th>Week</th>
+                    <th class="num">Hours Worked</th>
+                    <th class="num">Hourly Wages</th>
+                    <th class="num">Credit Tips</th>
+                    <th class="num">Gross Income</th>
+                    <th class="num">Taxable Income</th>
+                    <th class="num">Estimated Tax</th>
+                    <th class="num">Net Paycheck</th>
+                    <th class="paydate">Pay Date</th>
+                    <th class="num">Take-Home</th>
+                    <th class="num">Tip-Outs</th>
+                    <th class="num">Retirement Contribution</th>
+                    <th class="num">Employer Match</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="14" class="muted">No data yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+      <!-- BACKUP / RESTORE -->
       <div class="card center">
         <h2>💾 Backup / Restore</h2>
+        <p class="muted">
+          Export or back up your data, reset everything, or import saved
+          entries.
+        </p>
 
         <div class="button-row">
           <button id="export-data" class="btn-ghost">Export JSON</button>
@@ -192,7 +257,13 @@
 
         <div class="button-row">
           <button id="reset-data" class="btn-danger">Reset All Data</button>
-          <label for="import-csv" class="btn-ghost small">📥 Import CSV</label>
+          <!-- Styled Import CSV -->
+          <label
+            for="import-csv"
+            class="btn-ghost small"
+            style="cursor: pointer"
+            >📥 Import CSV</label
+          >
           <input
             type="file"
             id="import-csv"
@@ -202,10 +273,37 @@
         </div>
 
         <p class="muted" style="margin-top: 10px">
-          ⚠️ Reset permanently deletes everything.
+          ⚠️ Reset permanently deletes all entries, roles, and settings.
         </p>
       </div>
     </div>
+
+    <!-- Script -->
     <script src="script.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("./service-worker.js")
+            .then((reg) =>
+              console.log("✅ Service Worker registered", reg.scope)
+            )
+            .catch((err) => console.error("❌ Service Worker failed", err));
+        });
+      }
+    </script>
+    <!--NAVIGATION BAR SCRIPT-->
+    <script>
+      document.querySelectorAll(".top-nav button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".page")
+            .forEach((p) => p.classList.remove("active"));
+          document
+            .getElementById("page-" + btn.dataset.page)
+            .classList.add("active");
+        });
+      });
+    </script>
   </body>
 </html>
