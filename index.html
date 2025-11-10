@@ -16,6 +16,7 @@
         <button data-page="entry">Daily Entry</button>
         <button data-page="summary">Weekly Summary</button>
         <button data-page="settings">Settings</button>
+        <button data-page="backup">Backup / Restore</button>
       </nav>
       <main>
         <section id="page-settings" class="page">
@@ -39,6 +40,13 @@
               <label
                 >Other Deductions (%)
                 <input type="number" id="set-other" step="0.1" />
+              </label>
+              <label
+                >App Color Scheme
+                <select id="set-theme">
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                </select>
               </label>
               <button id="save-settings">Save Settings</button>
               <span class="muted">Saved locally in your browser.</span>
@@ -151,7 +159,18 @@
           <div class="card summary-card">
             <h2>📅 Weekly Summary</h2>
 
-            <!-- Stats Grid (YTD + Averages) -->
+            <div class="summary-toolbar">
+              <label>
+                Month
+                <select id="month-filter">
+                  <option value="all">All months</option>
+                </select>
+              </label>
+            </div>
+
+            <h3 class="section-header">Year-to-Date Overview</h3>
+            <p class="section-subtext">Cumulative totals and weekly averages across all recorded pay periods.</p>
+
             <div class="stats-paired">
               <div>
                 <strong>Total Weeks:</strong> <span id="stat-weeks">0</span>
@@ -173,7 +192,8 @@
                 <strong>YTD Tax:</strong> <span id="stat-tax">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Tax:</strong> <span id="avg-tax">$0.00</span>
+                <strong>Avg Weekly Tax:</strong>
+                <span id="avg-tax">$0.00</span>
               </div>
 
               <div>
@@ -189,7 +209,8 @@
                 <strong>YTD Net:</strong> <span id="stat-net">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Net:</strong> <span id="avg-net">$0.00</span>
+                <strong>Avg Weekly Net:</strong>
+                <span id="avg-net">$0.00</span>
               </div>
 
               <div>
@@ -211,22 +232,28 @@
               </div>
             </div>
 
-            <!-- Weekly Summary Table -->
+            <h3 class="section-header">Weekly Breakdown</h3>
+            <p class="section-subtext">Detailed week-by-week totals based on the selected month filter.</p>
+
             <div class="table-wrap">
               <table id="weekly-table">
                 <thead>
                   <tr>
-                    <th>Week</th>
+                    <th>Pay Period</th>
                     <th class="num">Hours Worked</th>
                     <th class="num">Hourly Wages</th>
-                    <th class="num">Credit Tips</th>
+                    <th class="num">Total Credit Card Tips</th>
+                    <th class="num">Total Cash Tips</th>
                     <th class="num">Gross Income</th>
                     <th class="num">Taxable Income</th>
-                    <th class="num">Estimated Tax</th>
-                    <th class="num">Net Paycheck</th>
+                    <th class="num">Estimated Tax Deduction</th>
                     <th class="paydate">Pay Date</th>
-                    <th class="num">Take-Home</th>
-                    <th class="num">Tip-Outs</th>
+                    <th class="num net-header">
+                      <div>Net Income</div>
+                      <div>(Estimated Paycheck Amount)</div>
+                    </th>
+                    <th class="num">Total Take-Home Amount</th>
+                    <th class="num">Total Tip-Outs</th>
                     <th class="num">Retirement Contribution</th>
                     <th class="num">Employer Match</th>
                     <th></th>
@@ -234,49 +261,49 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td colspan="14" class="muted">No data yet.</td>
+                    <td colspan="15" class="muted">No data yet.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </section>
+        <section id="page-backup" class="page">
+          <div class="card center">
+            <h2>💾 Backup / Restore</h2>
+            <p class="muted">
+              Export or back up your data, reset everything, or import saved
+              entries.
+            </p>
+
+            <div class="button-row">
+              <button id="export-data" class="btn-ghost">Export JSON</button>
+              <button id="export-csv" class="btn-ghost">Export CSV</button>
+            </div>
+
+            <div class="button-row">
+              <button id="reset-data" class="btn-danger">Reset All Data</button>
+              <!-- Styled Import CSV -->
+              <label
+                for="import-csv"
+                class="btn-ghost small"
+                style="cursor: pointer"
+                >📥 Import CSV</label
+              >
+              <input
+                type="file"
+                id="import-csv"
+                accept=".csv"
+                style="display: none"
+              />
+            </div>
+
+            <p class="muted" style="margin-top: 10px">
+              ⚠️ Reset permanently deletes all entries, roles, and settings.
+            </p>
+          </div>
+        </section>
       </main>
-      <!-- BACKUP / RESTORE -->
-      <div class="card center">
-        <h2>💾 Backup / Restore</h2>
-        <p class="muted">
-          Export or back up your data, reset everything, or import saved
-          entries.
-        </p>
-
-        <div class="button-row">
-          <button id="export-data" class="btn-ghost">Export JSON</button>
-          <button id="export-csv" class="btn-ghost">Export CSV</button>
-        </div>
-
-        <div class="button-row">
-          <button id="reset-data" class="btn-danger">Reset All Data</button>
-          <!-- Styled Import CSV -->
-          <label
-            for="import-csv"
-            class="btn-ghost small"
-            style="cursor: pointer"
-            >📥 Import CSV</label
-          >
-          <input
-            type="file"
-            id="import-csv"
-            accept=".csv"
-            style="display: none"
-          />
-        </div>
-
-        <p class="muted" style="margin-top: 10px">
-          ⚠️ Reset permanently deletes all entries, roles, and settings.
-        </p>
-      </div>
-    </div>
 
     <!-- Script -->
     <script src="script.js"></script>
