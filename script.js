@@ -10,9 +10,51 @@ document.addEventListener("DOMContentLoaded", () => {
     k401Rate: 5,
     employerMatch: 3,
     otherDeductions: 0,
+    theme: "dark",
     roles: { "Server": 10.00, "Host": 18.00 }
   };
   let entries = loadEntries() || [];
+  let currentMonthFilter = "all";
+
+  if (!settings.theme) settings.theme = "dark";
+
+  function applyTheme(theme) {
+    document.body.classList.remove("theme-dark", "theme-light");
+    const applied = theme === "light" ? "theme-light" : "theme-dark";
+    document.body.classList.add(applied);
+  }
+
+  const monthNames = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
+
+  function monthKeyFromISO(iso) {
+    return iso.slice(0, 7);
+  }
+
+  function monthLabelFromKey(key) {
+    const date = new Date(`${key}-01T00:00:00`);
+    return monthNames.format(date);
+  }
+
+  function refreshMonthFilterOptions(weeks) {
+    const select = document.getElementById("month-filter");
+    if (!select) return;
+
+    const monthSet = new Set();
+    for (const wk of weeks) {
+      monthSet.add(monthKeyFromISO(wk.weekStart));
+    }
+
+    const months = Array.from(monthSet).sort().reverse();
+    const previous = currentMonthFilter;
+
+    select.innerHTML = `<option value="all">All months</option>` + months.map(key => `<option value="${key}">${monthLabelFromKey(key)}</option>`).join("");
+
+    if (previous !== "all" && !months.includes(previous)) {
+      currentMonthFilter = "all";
+    }
+
+    select.value = currentMonthFilter;
+  }
 
   // ---------- Utility Helpers ----------
   const fmtMoney = n => `$${(Number(n) || 0).toFixed(2)}`;
@@ -84,6 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("set-k401").value = settings.k401Rate;
     document.getElementById("set-match").value = settings.employerMatch;
     document.getElementById("set-other").value = settings.otherDeductions;
+    const themeSelect = document.getElementById("set-theme");
+    if (themeSelect) themeSelect.value = settings.theme || "dark";
     renderRolesTable();
     refreshRoleSelect();
   }
@@ -102,8 +146,10 @@ document.addEventListener("DOMContentLoaded", () => {
     settings.k401Rate = parseFloat(document.getElementById("set-k401").value) || 0;
     settings.employerMatch = parseFloat(document.getElementById("set-match").value) || 0;
     settings.otherDeductions = parseFloat(document.getElementById("set-other").value) || 0;
+    settings.theme = document.getElementById("set-theme").value || "dark";
     saveSettings();
     refreshWeekTable();
+    applyTheme(settings.theme);
     alert("Settings saved.");
   });
 
@@ -237,6 +283,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------- Weekly Summary ----------
   function refreshWeekTable() {
     const weeks = aggregateWeeks(entries);
+    refreshMonthFilterOptions(weeks);
+
     const tbody = document.querySelector("#weekly-table tbody");
     tbody.innerHTML = "";
 
@@ -251,35 +299,52 @@ document.addEventListener("DOMContentLoaded", () => {
       sumHours += t.hours;
       sumTakeHome += t.takeHome;
       sumTipOuts += t.tipOuts;
+    }
 
-      const payDateISO = calcPayDate(wk.weekEnd);
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-      <td><strong>${fmtDate(wk.weekStart)}–${fmtDate(wk.weekEnd)}</strong></td>
-      <td class="num">${t.hours.toFixed(2)} h</td>
-      <td class="num">${fmtMoney(t.hourlyPay)}</td>
-      <td class="num">${fmtMoney(t.tips)}</td>
-      <td class="num">${fmtMoney(t.gross)}</td>
-      <td class="num">${fmtMoney(t.taxableIncome)}</td>
-      <td class="num">${fmtMoney(t.tax)}</td>
-      <td class="num netcell"><strong>${fmtMoney(t.net)}</strong></td>
-      <td class="paydate">${fmtDate(payDateISO)}</td>
-      <td class="num takehome"><strong>${fmtMoney(t.takeHome)}</strong></td>
-      <td class="num">${fmtMoney(t.tipOuts)}</td>
-      <td class="num">${fmtMoney(t.retirement)}</td>
-      <td class="num">${fmtMoney(t.match)}</td>
-      <td><button class="btn-ghost" data-toggle="${wk.key}">Details</button></td>`;
-      tbody.appendChild(tr);
+    const filteredWeeks = currentMonthFilter === "all"
+      ? weeks
+      : weeks.filter(wk => monthKeyFromISO(wk.weekStart) === currentMonthFilter);
 
-      // Add collapsible details row dynamically
-      const details = document.createElement("tr");
-      details.style.display = "none";
+    if (!filteredWeeks.length) {
+      const empty = document.createElement("tr");
+      empty.innerHTML = `<td colspan="15" class="muted">No data for the selected month.</td>`;
+      tbody.appendChild(empty);
+    } else {
+      for (const wk of filteredWeeks) {
+        const t = wk.totals;
+        const payDateISO = calcPayDate(wk.weekEnd);
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-week-key", wk.key);
+        tr.innerHTML = `
+      <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)}–${fmtDate(wk.weekEnd)}</strong></span></button></td>
+      <td class="num mobile-extra" data-label="Hours Worked">${t.hours.toFixed(2)} h</td>
+      <td class="num mobile-extra" data-label="Hourly Wages">${fmtMoney(t.hourlyPay)}</td>
+      <td class="num mobile-extra" data-label="Total Credit Card Tips">${fmtMoney(t.tips)}</td>
+      <td class="num mobile-extra" data-label="Total Cash Tips">${fmtMoney(t.cashTips)}</td>
+      <td class="num mobile-extra" data-label="Gross Income">${fmtMoney(t.gross)}</td>
+      <td class="num mobile-extra" data-label="Taxable Income">${fmtMoney(t.taxableIncome)}</td>
+      <td class="num mobile-extra" data-label="Estimated Tax Deduction">${fmtMoney(t.tax)}</td>
+      <td class="paydate" data-label="Pay Date">${fmtDate(payDateISO)}</td>
+      <td class="num netcell" data-label="Net Income" data-sublabel="(Estimated Paycheck Amount)"><strong>${fmtMoney(t.net)}</strong></td>
+      <td class="num mobile-extra takehome" data-label="Total Take-Home Amount"><strong>${fmtMoney(t.takeHome)}</strong></td>
+      <td class="num mobile-extra" data-label="Total Tip-Outs">${fmtMoney(t.tipOuts)}</td>
+      <td class="num mobile-extra" data-label="Retirement Contribution">${fmtMoney(t.retirement)}</td>
+      <td class="num mobile-extra" data-label="Employer Match">${fmtMoney(t.match)}</td>
+      <td class="mobile-actions" data-label="">
+        <div class="action-stack">
+          <button class="btn-ghost" data-toggle="${wk.key}">Daily Breakdown</button>
+          <p class="mobile-hint">Scroll horizontally for more info. Delete options appear inside the daily breakdown.</p>
+        </div>
+      </td>`;
+        tbody.appendChild(tr);
 
-      // Compute number of columns automatically
-      const colCount = document.querySelector("#weekly-table thead tr").children.length;
-      details.innerHTML = `<td colspan="${colCount}">${weekDetailsHTML(wk)}</td>`;
-
-      tbody.appendChild(details);
+        const details = document.createElement("tr");
+        details.className = "week-details";
+        details.style.display = "none";
+        const colCount = document.querySelector("#weekly-table thead tr").children.length;
+        details.innerHTML = `<td colspan="${colCount}"><div class="details-header">Daily Breakdown</div>${weekDetailsHTML(wk)}</td>`;
+        tbody.appendChild(details);
+      }
     }
 
     document.getElementById("stat-weeks").textContent = weeks.length;
@@ -301,13 +366,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------- Toggle + Delete ----------
   document.addEventListener("click", e => {
+    const summaryKey = e.target?.getAttribute("data-summary");
+    if (summaryKey) {
+      const row = e.target.closest("tr");
+      if (!row) return;
+      const open = row.classList.toggle("mobile-summary-open");
+      if (e.target instanceof HTMLElement) {
+        e.target.setAttribute("aria-expanded", open ? "true" : "false");
+        e.target.classList.toggle("expanded", open);
+      }
+      return;
+    }
+
     const key = e.target?.getAttribute("data-toggle");
     if (key) {
       const row = e.target.closest("tr");
       const details = row.nextElementSibling;
-      const open = details.style.display === "table-row";
-      details.style.display = open ? "none" : "table-row";
-      e.target.textContent = open ? "Details" : "Hide Details";
+      if (!details || !details.classList.contains("week-details")) return;
+
+      const isMobile = window.innerWidth <= 768;
+      const open = details.style.display !== "none" && details.style.display !== "";
+
+      if (open) {
+        details.style.display = "none";
+        details.classList.remove("details-expanded");
+        e.target.textContent = "Daily Breakdown";
+      } else {
+        details.style.display = isMobile ? "block" : "table-row";
+        details.classList.add("details-expanded");
+        e.target.textContent = "Hide Daily Breakdown";
+      }
     }
   });
   document.addEventListener("click", e => {
@@ -392,6 +480,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------- Init ----------
   renderSettings();
   refreshWeekTable();
+  applyTheme(settings.theme);
   refreshRoleSelect();
 
 });
+
+const themeSelectEl = document.getElementById("set-theme");
+if (themeSelectEl) {
+  themeSelectEl.addEventListener("change", e => {
+    const theme = e.target.value;
+    applyTheme(theme);
+    settings.theme = theme;
+  });
+}
+
+const monthFilterEl = document.getElementById("month-filter");
+if (monthFilterEl) {
+  monthFilterEl.addEventListener("change", e => {
+    currentMonthFilter = e.target.value || "all";
+    refreshWeekTable();
+  });
+}
