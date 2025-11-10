@@ -891,23 +891,20 @@ td.takehome strong {
 
 .summary-toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
 
 .summary-toolbar label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   font-size: 0.85rem;
   color: var(--muted);
 }
 
 .summary-toolbar select {
-  min-width: 180px;
+  min-width: 200px;
   border: 1px solid var(--input-border);
   border-radius: 6px;
   padding: 6px 10px;

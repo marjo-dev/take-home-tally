@@ -26,10 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const monthNames = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
 
-  function monthKeyFromISO(iso) {
-    return iso.slice(0, 7);
-  }
-
   function monthLabelFromKey(key) {
     const date = new Date(`${key}-01T00:00:00`);
     return monthNames.format(date);
@@ -41,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const monthSet = new Set();
     for (const wk of weeks) {
-      monthSet.add(monthKeyFromISO(wk.weekStart));
+      wk.monthKeys.forEach(key => monthSet.add(key));
     }
 
     const months = Array.from(monthSet).sort().reverse();
@@ -224,11 +220,26 @@ document.addEventListener("DOMContentLoaded", () => {
       const retirement = k401 + match;
 
       const takeHome = net + cashTips - tipOuts;
+      const payDateISO = calcPayDate(wkEnd);
+
+      const monthsInPeriod = new Set();
+      const start = new Date(wkStart + "T00:00:00");
+      const end = new Date(wkEnd + "T00:00:00");
+      const cursor = new Date(start);
+      while (cursor <= end) {
+        monthsInPeriod.add(cursor.toISOString().slice(0, 7));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      // also ensure pay date month is included
+      monthsInPeriod.add(payDateISO.slice(0, 7));
 
       weeks.push({
         key: `${wkStart}_${wkEnd}`,
         weekStart: wkStart,
         weekEnd: wkEnd,
+        payDateISO,
+        monthKeys: [...monthsInPeriod],
         days: list,
         totals: { hours: hrs, hourlyPay: pay, tips: ccTips, cashTips, tipOuts, gross, taxableIncome: taxable, tax, net, takeHome, retirement, match }
       });
@@ -285,6 +296,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const weeks = aggregateWeeks(entries);
     refreshMonthFilterOptions(weeks);
 
+    const filterSelect = document.getElementById("month-filter");
+    const activeFilter = filterSelect ? filterSelect.value || currentMonthFilter : currentMonthFilter;
+    currentMonthFilter = activeFilter;
+
     const tbody = document.querySelector("#weekly-table tbody");
     tbody.innerHTML = "";
 
@@ -301,9 +316,9 @@ document.addEventListener("DOMContentLoaded", () => {
       sumTipOuts += t.tipOuts;
     }
 
-    const filteredWeeks = currentMonthFilter === "all"
+    const filteredWeeks = activeFilter === "all"
       ? weeks
-      : weeks.filter(wk => monthKeyFromISO(wk.weekStart) === currentMonthFilter);
+      : weeks.filter(wk => wk.monthKeys.includes(activeFilter));
 
     if (!filteredWeeks.length) {
       const empty = document.createElement("tr");
@@ -312,7 +327,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       for (const wk of filteredWeeks) {
         const t = wk.totals;
-        const payDateISO = calcPayDate(wk.weekEnd);
         const tr = document.createElement("tr");
         tr.setAttribute("data-week-key", wk.key);
         tr.innerHTML = `
@@ -324,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <td class="num mobile-extra" data-label="Gross Income">${fmtMoney(t.gross)}</td>
       <td class="num mobile-extra" data-label="Taxable Income">${fmtMoney(t.taxableIncome)}</td>
       <td class="num mobile-extra" data-label="Estimated Tax Deduction">${fmtMoney(t.tax)}</td>
-      <td class="paydate" data-label="Pay Date">${fmtDate(payDateISO)}</td>
+      <td class="paydate" data-label="Pay Date">${fmtDate(wk.payDateISO)}</td>
       <td class="num netcell" data-label="Net Income" data-sublabel="(Estimated Paycheck Amount)"><strong>${fmtMoney(t.net)}</strong></td>
       <td class="num mobile-extra takehome" data-label="Total Take-Home Amount"><strong>${fmtMoney(t.takeHome)}</strong></td>
       <td class="num mobile-extra" data-label="Total Tip-Outs">${fmtMoney(t.tipOuts)}</td>
@@ -477,27 +491,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  const themeSelectEl = document.getElementById("set-theme");
+  if (themeSelectEl) {
+    themeSelectEl.addEventListener("change", e => {
+      const theme = e.target.value;
+      applyTheme(theme);
+      settings.theme = theme;
+    });
+  }
+
+  const monthFilterEl = document.getElementById("month-filter");
+  if (monthFilterEl) {
+    monthFilterEl.addEventListener("change", () => {
+      currentMonthFilter = monthFilterEl.value || "all";
+      refreshWeekTable();
+    });
+  }
+
   // ---------- Init ----------
   renderSettings();
-  refreshWeekTable();
   applyTheme(settings.theme);
+  refreshWeekTable();
   refreshRoleSelect();
 
 });
-
-const themeSelectEl = document.getElementById("set-theme");
-if (themeSelectEl) {
-  themeSelectEl.addEventListener("change", e => {
-    const theme = e.target.value;
-    applyTheme(theme);
-    settings.theme = theme;
-  });
-}
-
-const monthFilterEl = document.getElementById("month-filter");
-if (monthFilterEl) {
-  monthFilterEl.addEventListener("change", e => {
-    currentMonthFilter = e.target.value || "all";
-    refreshWeekTable();
-  });
-}
