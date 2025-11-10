@@ -1,56 +1,108 @@
-/* ---------- Base ---------- */
+/* =====================================================
+   Restaurant Income Tracker – Final Dark Theme Styles
+   ===================================================== */
+/* Navigation bar style for mobile layout */
+.top-nav {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 14px;
+  background: #1e1e1e;
+  padding: 8px 0;
+  border-radius: 10px;
+}
+
+.top-nav button {
+  background: none;
+  border: none;
+  color: #ddd;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.top-nav button:hover {
+  color: #4ade80;
+}
+
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+
+/* Base Layout */
 body {
-  font-family: system-ui, sans-serif;
   background: #121212;
   color: #e5e5e5;
+  font-family: system-ui, sans-serif;
   margin: 0;
-  padding: 0;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #f1f1f1;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+  color: #f9fafb;
 }
 
 .wrap {
-  max-width: 1000px;
-  margin: auto;
-  padding: 24px;
-}
-
-h1,
-h2 {
-  color: #fafafa;
-}
-
-.muted {
-  color: #9ca3af;
-  font-size: 13px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* ---------- Cards ---------- */
 .card {
   background: #1e1e1e;
+  padding: 16px 18px;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-  padding: 20px;
-  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
 }
 
-/* ---------- Form Elements ---------- */
+.card h2 {
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+/* ---------- Two-column grid for Settings + Roles ---------- */
+.grid.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 800px) {
+  .grid.two {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Inputs, Labels, Buttons ---------- */
 label {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 16px;
-  padding: 6px 0;
+  font-size: 0.9rem;
 }
 
 input,
 select,
 button {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #374151;
+  font: inherit;
+  border: 1px solid #333;
   border-radius: 6px;
-  background: #2c2c2c;
-  color: #f3f4f6;
-  font-size: 14px;
+  padding: 7px 8px;
+  background: #222;
+  color: #f9fafb;
 }
 
 input:focus,
@@ -62,76 +114,144 @@ select:focus {
 /* ---------- Buttons ---------- */
 button {
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 6px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  padding: 8px 12px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #2563eb;
 }
 
 .btn-ghost {
-  background: #374151;
-  color: #f3f4f6;
+  background: transparent;
+  border: 1px solid #444;
+  color: #ddd;
 }
+
 .btn-ghost:hover {
-  background: #4b5563;
+  background: #2a2a2a;
 }
 
 .btn-danger {
-  background-color: #dc2626;
-  color: #fff;
+  background: #b91c1c;
+  border: none;
 }
+
 .btn-danger:hover {
-  background-color: #b91c1c;
+  background: #991b1b;
 }
 
 .btn-ghost.small {
-  padding: 6px 10px;
-  width: auto;
-  white-space: nowrap;
+  padding: 4px 8px;
+  font-size: 0.8rem;
 }
 
-/* ---------- Layout grids ---------- */
-.grid.two {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+/* ---------- Layout Helpers ---------- */
+.center {
+  text-align: center;
 }
-
-@media (max-width: 850px) {
-  .grid.two {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ---------- Daily Entry Inline Layout ---------- */
-.entry-row {
-  display: flex;
-  gap: 20px;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.entry-row label {
-  flex: 1;
-  min-width: 150px;
-}
-
-/* Date + Today button inline */
-.date-input-wrap {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-/* ---------- Button Row Layout ---------- */
 .button-row {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 12px;
-  margin: 10px 0;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.muted {
+  color: #999;
+  font-size: 0.85rem;
 }
 
-/* ---------- Tables ---------- */
+/* =====================================================
+   DAILY ENTRY – FORM CARD (vertical fields)
+   ===================================================== */
+
+.entry-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 10px;
+}
+
+.entry-column label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.date-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.entry-column input[type="number"],
+.entry-column input[type="date"],
+.entry-column select {
+  max-width: 280px;
+}
+
+/* Optional form-style subtle separators */
+.entry-column label:not(:last-child) {
+  border-bottom: 1px dashed #2a2a2a;
+  padding-bottom: 6px;
+}
+
+/* =====================================================
+   TABLES + WEEKLY SUMMARY
+   ===================================================== */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #2a2a2a;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+th {
+  background: #242424;
+  font-weight: 600;
+}
+
+td.num,
+th.num {
+  text-align: right;
+  padding-right: 10px;
+}
+
+/* Highlight columns */
+td.paydate {
+  color: #93c5fd;
+  white-space: nowrap;
+}
+td.netcell strong {
+  color: #4ade80;
+  font-weight: 700;
+}
+td.takehome strong {
+  color: #2dd4bf;
+  font-weight: 700;
+}
+
+/* Stats grid (YTD / averages) */
 .stats-paired {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -147,78 +267,136 @@ button {
   padding-bottom: 4px;
 }
 
-.stats-paired span,
-.stats-paired strong {
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.data-updated {
-  transform: scale(1.08);
-  color: #86efac; /* soft green flash */
-}
-.stats-paired > div:nth-child(odd) {
-  padding-right: 12px;
-}
-
 @media (max-width: 700px) {
   .stats-paired {
     grid-template-columns: 1fr;
   }
 }
-
-.table-wrap {
-  overflow-x: auto;
+/* ---------- Weekly Summary Card ---------- */
+.summary-card {
+  position: relative;
+  padding-bottom: 18px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
+.summary-card h2 {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 6px;
 }
 
-th,
-td {
-  border-bottom: 1px solid #2f2f2f;
-  text-align: center;
-  padding: 10px 6px;
-  white-space: normal;
-  word-break: break-word;
+/* keep the grid aligned with the rest */
+.summary-card .stats-paired {
+  margin-top: 8px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 10px;
 }
 
-tr:nth-child(even) {
-  background: #1a1a1a;
+/* highlight Tip-Outs similar to others */
+#stat-tipouts {
+  color: #f87171;
+  font-weight: 700;
+}
+#avg-tipouts {
+  color: #fca5a5;
 }
 
-/* Highlight net values */
-td strong {
+/* table spacing tweaks */
+.summary-card table th,
+.summary-card table td {
+  border-color: #2a2a2a;
+}
+
+.summary-card table tr:hover {
+  background: #1b1b1b;
+}
+/* YTD highlights */
+#stat-gross {
+  color: #fbbf24;
+  font-weight: 700;
+} /* gold */
+#stat-net {
   color: #4ade80;
   font-weight: 700;
-}
+} /* green */
+#stat-takehome {
+  color: #2dd4bf;
+  font-weight: 700;
+} /* teal */
 
-/* Detail table styling */
+/* Details tables */
 .details-table th {
-  background: #2b2b2b;
-  font-weight: 600;
-  font-size: 13px;
-}
-.details-table td {
-  font-size: 13px;
-  padding: 6px 8px;
-}
-.details-table tr:nth-child(even) {
   background: #242424;
 }
+.details-table td {
+  font-size: 0.85rem;
+}
+#weekly-table .btn-ghost {
+  white-space: nowrap;
+}
+/* =====================================================
+   BACKUP / RESTORE
+   ===================================================== */
+.card.center p.muted {
+  margin-bottom: 10px;
+}
+input[type="file"] {
+  display: none;
+}
 
-.center {
+/* =====================================================
+   OPTIONAL ANIMATIONS (commented)
+   ===================================================== */
+/*
+.stats-paired span,
+.stats-paired strong {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.data-updated {
+  transform: scale(1.08);
+  color: #86efac;
+}
+*/
+/* ---------- Enhanced Daily Entry Card ---------- */
+.entry-card {
+  position: relative;
+}
+
+.entry-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid #2a2a2a;
+  margin-top: 8px;
+}
+
+.entry-footer button {
+  background: #2563eb;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.entry-footer button:hover {
+  background: #1e40af;
+}
+
+#weekly-table th:last-child,
+#weekly-table td:last-child {
+  padding-right: 16px;
+}
+
+#weekly-table .btn-ghost {
+  font-size: 0.85rem;
+  padding: 5px 8px;
+  white-space: nowrap;
+}
+
+#weekly-table td:last-child {
   text-align: center;
+  background: #181818;
+  border-left: 1px solid #2a2a2a;
 }
-
-#stat-net {
-  color: #4ade80; /* same green as table net */
-  font-weight: 700;
-}
-
-#stat-gross {
-  color: #fbbf24; /* amber/gold */
-  font-weight: 700;
+#weekly-table td.actions {
+  text-align: center;
+  width: 90px;
 }

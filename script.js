@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   // ---------- Storage Keys ----------
-  const LS_SETTINGS = "it_settings_v1";
-  const LS_ENTRIES = "it_entries_v1";
+  const LS_SETTINGS = "it_settings_v2";
+  const LS_ENTRIES = "it_entries_v2";
 
   // ---------- App State ----------
   let settings = loadSettings() || {
-    taxRate: 19,
+    taxRate: 12,
     k401Rate: 5,
-    employerMatch: 4,
+    employerMatch: 3,
     otherDeductions: 0,
-    roles: { "Server": 10.35, "Host": 15.50 }
+    roles: { "Server": 10.00, "Host": 18.00 }
   };
   let entries = loadEntries() || [];
 
@@ -28,15 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
     date.setDate(date.getDate() - day);
     return toISO(date);
   };
-
   const endOfWeekSunday = d => {
     const mon = new Date(startOfWeekMonday(d));
     const sun = new Date(mon);
     sun.setDate(mon.getDate() + 6);
     return toISO(sun);
   };
+  function calcPayDate(wkEndISO) {
+    const d = new Date(wkEndISO + "T00:00:00");
+    d.setDate(d.getDate() + 3); // next Wednesday
+    return toISO(d);
+  }
 
-  // ---------- Storage Handlers ----------
+  // ---------- Storage ----------
   function saveSettings() { localStorage.setItem(LS_SETTINGS, JSON.stringify(settings)); }
   function loadSettings() { try { return JSON.parse(localStorage.getItem(LS_SETTINGS)); } catch { return null; } }
   function saveEntries() { localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
@@ -53,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
       sel.appendChild(opt);
     }
   }
-
   function renderRolesTable() {
     const tbody = document.querySelector("#roles-table tbody");
     tbody.innerHTML = "";
@@ -61,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
       <td>${name}</td>
-      <td>${fmtMoney(rate)}</td>
+      <td class="num">${fmtMoney(rate)}</td>
       <td><button class="btn-danger" data-role="${name}">Delete</button></td>`;
       tbody.appendChild(tr);
     }
@@ -76,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-
   function renderSettings() {
     document.getElementById("set-tax").value = settings.taxRate;
     document.getElementById("set-k401").value = settings.k401Rate;
@@ -85,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderRolesTable();
     refreshRoleSelect();
   }
-
   document.getElementById("add-role").addEventListener("click", () => {
     const name = document.getElementById("role-name").value.trim();
     const rate = parseFloat(document.getElementById("role-rate").value);
@@ -96,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("role-rate").value = "";
     renderSettings();
   });
-
   document.getElementById("save-settings").addEventListener("click", () => {
     settings.taxRate = parseFloat(document.getElementById("set-tax").value) || 0;
     settings.k401Rate = parseFloat(document.getElementById("set-k401").value) || 0;
@@ -109,35 +109,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------- Daily Entry ----------
   document.getElementById("entry-date").value = toISO(new Date());
-
   document.getElementById("add-entry").addEventListener("click", () => {
     const date = document.getElementById("entry-date").value;
     const role = document.getElementById("entry-role").value;
     const hours = parseFloat(document.getElementById("entry-hours").value);
     const tips = parseFloat(document.getElementById("entry-tips").value) || 0;
+    const cashTips = parseFloat(document.getElementById("entry-cash").value) || 0;
+    const tipOuts = parseFloat(document.getElementById("entry-tipouts").value) || 0;
 
     if (!date || !role || !(hours > 0)) return alert("Complete all fields!");
-    entries.push({ id: crypto.randomUUID(), date, role, hours, tips });
+
+    entries.push({
+      id: crypto.randomUUID(),
+      date, role, hours,
+      tips, cashTips, tipOuts
+    });
     saveEntries();
 
     document.getElementById("entry-hours").value = "";
     document.getElementById("entry-tips").value = "";
+    document.getElementById("entry-cash").value = "";
+    document.getElementById("entry-tipouts").value = "";
     refreshWeekTable();
   });
 
-  // Autofocus flow
+  // Autofocus chain
   document.getElementById("entry-date").addEventListener("change", () => document.getElementById("entry-role").focus());
   document.getElementById("entry-role").addEventListener("change", () => document.getElementById("entry-hours").focus());
   document.getElementById("entry-hours").addEventListener("keyup", (e) => { if (e.key === "Enter") document.getElementById("entry-tips").focus(); });
   document.getElementById("entry-tips").addEventListener("keyup", (e) => { if (e.key === "Enter") document.getElementById("add-entry").click(); });
 
-  // Today button
+  // Today shortcut
   document.getElementById("today-btn").addEventListener("click", () => {
     document.getElementById("entry-date").value = toISO(new Date());
     document.getElementById("entry-role").focus();
   });
 
-  // ---------- Weekly Summary ----------
+  // ---------- Aggregation ----------
   function aggregateWeeks(all) {
     const map = new Map();
     for (const e of all) {
@@ -145,15 +153,22 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!map.has(wk)) map.set(wk, []);
       map.get(wk).push(e);
     }
+
     const weeks = [];
     for (const [wkStart, list] of map.entries()) {
       const wkEnd = endOfWeekSunday(wkStart);
-      let hrs = 0, pay = 0, tips = 0;
+
+      let hrs = 0, pay = 0, ccTips = 0, cashTips = 0, tipOuts = 0;
       for (const d of list) {
         const rate = settings.roles[d.role] || 0;
-        hrs += d.hours; pay += d.hours * rate; tips += d.tips;
+        hrs += d.hours;
+        pay += d.hours * rate;
+        ccTips += d.tips || 0;
+        cashTips += d.cashTips || 0;
+        tipOuts += d.tipOuts || 0;
       }
-      const gross = pay + tips;
+
+      const gross = pay + ccTips; // taxable only
       const k401 = gross * (settings.k401Rate / 100);
       const taxable = gross - k401;
       const tax = taxable * (settings.taxRate / 100);
@@ -162,17 +177,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const match = gross * (settings.employerMatch / 100);
       const retirement = k401 + match;
 
+      const takeHome = net + cashTips - tipOuts;
+
       weeks.push({
         key: `${wkStart}_${wkEnd}`,
         weekStart: wkStart,
         weekEnd: wkEnd,
         days: list,
-        totals: { hours: hrs, hourlyPay: pay, tips, gross, taxableIncome: taxable, tax, net, retirement, match }
+        totals: { hours: hrs, hourlyPay: pay, tips: ccTips, cashTips, tipOuts, gross, taxableIncome: taxable, tax, net, takeHome, retirement, match }
       });
     }
+
     return weeks.sort((a, b) => b.weekEnd.localeCompare(a.weekEnd));
   }
 
+  // ---------- Details Table ----------
   function weekDetailsHTML(wk) {
     const rows = wk.days.map(d => {
       const rate = settings.roles[d.role] || 0;
@@ -185,7 +204,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${d.role} (${fmtMoney(rate)}/hr)</td>
         <td class="num">${d.hours.toFixed(2)} h</td>
         <td class="num">${fmtMoney(wage)}</td>
-        <td class="num">${fmtMoney(d.tips)}</td>
+        <td class="num">${fmtMoney(d.tips || 0)}</td>
+        <td class="num">${fmtMoney(d.cashTips || 0)}</td>
+        <td class="num">${fmtMoney(d.tipOuts || 0)}</td>
         <td class="num"><strong>${fmtMoney(gross)}</strong></td>
         <td><button class="btn-danger" data-del="${d.id}">Delete</button></td>
       </tr>`;
@@ -200,54 +221,64 @@ document.addEventListener("DOMContentLoaded", () => {
           <th>Role</th>
           <th class="num">Hours</th>
           <th class="num">Hourly Pay</th>
-          <th class="num">Tips</th>
+          <th class="num">Credit Tips</th>
+          <th class="num">Cash Tips</th>
+          <th class="num">Tip-Outs</th>
           <th class="num">Gross</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        ${rows || "<tr><td colspan='8' class='muted'>No entries</td></tr>"}
+        ${rows || "<tr><td colspan='10' class='muted'>No entries</td></tr>"}
       </tbody>
     </table>`;
   }
 
+  // ---------- Weekly Summary ----------
   function refreshWeekTable() {
-
-    // Optional: Add highlight animation when values change
-    document.querySelectorAll('.stats-paired span, .stats-paired strong').forEach(el => {
-      el.classList.add('data-updated');
-      setTimeout(() => el.classList.remove('data-updated'), 350);
-    });
-
-
     const weeks = aggregateWeeks(entries);
     const tbody = document.querySelector("#weekly-table tbody");
     tbody.innerHTML = "";
 
-    let sumGross = 0, sumTax = 0, sumNet = 0, sumRet = 0, sumHours = 0;
+    let sumGross = 0, sumTax = 0, sumNet = 0, sumRet = 0, sumHours = 0, sumTakeHome = 0, sumTipOuts = 0;
 
     for (const wk of weeks) {
       const t = wk.totals;
-      sumGross += t.gross; sumTax += t.tax; sumNet += t.net; sumRet += t.retirement; sumHours += t.hours;
+      sumGross += t.gross;
+      sumTax += t.tax;
+      sumNet += t.net;
+      sumRet += t.retirement;
+      sumHours += t.hours;
+      sumTakeHome += t.takeHome;
+      sumTipOuts += t.tipOuts;
 
+      const payDateISO = calcPayDate(wk.weekEnd);
       const tr = document.createElement("tr");
       tr.innerHTML = `
       <td><strong>${fmtDate(wk.weekStart)}–${fmtDate(wk.weekEnd)}</strong></td>
-      <td>${t.hours.toFixed(2)} h</td>
-      <td>${fmtMoney(t.hourlyPay)}</td>
-      <td>${fmtMoney(t.tips)}</td>
-      <td>${fmtMoney(t.gross)}</td>
-      <td>${fmtMoney(t.taxableIncome)}</td>
-      <td>${fmtMoney(t.tax)}</td>
-      <td><strong>${fmtMoney(t.net)}</strong></td>
-      <td>${fmtMoney(t.retirement)}</td>
-      <td>${fmtMoney(t.match)}</td>
+      <td class="num">${t.hours.toFixed(2)} h</td>
+      <td class="num">${fmtMoney(t.hourlyPay)}</td>
+      <td class="num">${fmtMoney(t.tips)}</td>
+      <td class="num">${fmtMoney(t.gross)}</td>
+      <td class="num">${fmtMoney(t.taxableIncome)}</td>
+      <td class="num">${fmtMoney(t.tax)}</td>
+      <td class="num netcell"><strong>${fmtMoney(t.net)}</strong></td>
+      <td class="paydate">${fmtDate(payDateISO)}</td>
+      <td class="num takehome"><strong>${fmtMoney(t.takeHome)}</strong></td>
+      <td class="num">${fmtMoney(t.tipOuts)}</td>
+      <td class="num">${fmtMoney(t.retirement)}</td>
+      <td class="num">${fmtMoney(t.match)}</td>
       <td><button class="btn-ghost" data-toggle="${wk.key}">Details</button></td>`;
       tbody.appendChild(tr);
 
+      // Add collapsible details row dynamically
       const details = document.createElement("tr");
       details.style.display = "none";
-      details.innerHTML = `<td colspan="11">${weekDetailsHTML(wk)}</td>`;
+
+      // Compute number of columns automatically
+      const colCount = document.querySelector("#weekly-table thead tr").children.length;
+      details.innerHTML = `<td colspan="${colCount}">${weekDetailsHTML(wk)}</td>`;
+
       tbody.appendChild(details);
     }
 
@@ -256,16 +287,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("stat-tax").textContent = fmtMoney(sumTax);
     document.getElementById("stat-net").textContent = fmtMoney(sumNet);
     document.getElementById("stat-retire").textContent = fmtMoney(sumRet);
+    document.getElementById("stat-takehome").textContent = fmtMoney(sumTakeHome);
+    document.getElementById("stat-tipouts").textContent = fmtMoney(sumTipOuts);
 
     document.getElementById("avg-gross").textContent = fmtMoney(weeks.length ? (sumGross / weeks.length) : 0);
     document.getElementById("avg-tax").textContent = fmtMoney(weeks.length ? (sumTax / weeks.length) : 0);
     document.getElementById("avg-net").textContent = fmtMoney(weeks.length ? (sumNet / weeks.length) : 0);
-    document.getElementById("avg-hours").textContent = weeks.length ? (sumHours / weeks.length).toFixed(2) + " h" : "0.0 h";
-    document.getElementById("avg-retire").textContent =
-      weeks.length ? fmtMoney(sumRet / weeks.length) : "$0.00";
+    document.getElementById("avg-hours").textContent = weeks.length ? (sumHours / weeks.length).toFixed(2) + " h" : "0.00 h";
+    document.getElementById("avg-retire").textContent = fmtMoney(weeks.length ? (sumRet / weeks.length) : 0);
+    document.getElementById("avg-takehome").textContent = fmtMoney(weeks.length ? (sumTakeHome / weeks.length) : 0);
+    document.getElementById("avg-tipouts").textContent = fmtMoney(weeks.length ? (sumTipOuts / weeks.length) : 0);
   }
 
-  // Toggle Details
+  // ---------- Toggle + Delete ----------
   document.addEventListener("click", e => {
     const key = e.target?.getAttribute("data-toggle");
     if (key) {
@@ -276,8 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.textContent = open ? "Details" : "Hide Details";
     }
   });
-
-  // Delete Entry
   document.addEventListener("click", e => {
     const id = e.target?.getAttribute("data-del");
     if (id && confirm("Delete this entry?")) {
@@ -287,26 +319,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ---------- EXPORT JSON ----------
+  // ---------- Export / Import / Reset ----------
   document.getElementById("export-data").addEventListener("click", () => {
     const blob = new Blob([JSON.stringify({ settings, entries }, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = "income_tracker_backup.json";
-    a.click();
+    a.href = url; a.download = "income_tracker_backup.json"; a.click();
     URL.revokeObjectURL(url);
   });
-
-  // ---------- EXPORT CSV ----------
   document.getElementById("export-csv").addEventListener("click", () => {
     if (!entries.length) return alert("No entries!");
     const header = [
-      "Date", "Role", "Hours", "Tips", "Hourly Pay", "Gross", "401k", "Taxable Income", "Tax", "Other", "Net", "Employer Match", "Retirement"
+      "Date", "Role", "Hours", "Credit Tips", "Cash Tips", "Tip-Outs", "Hourly Pay", "Gross", "401k", "Taxable Income", "Tax", "Other", "Net", "Take-Home", "Employer Match", "Retirement"
     ];
     const rows = entries.map(e => {
       const rate = settings.roles[e.role] || 0;
-      const gross = e.hours * rate + (e.tips || 0);
+      const gross = (e.hours * rate) + (e.tips || 0);
       const k401 = gross * (settings.k401Rate / 100);
       const taxable = gross - k401;
       const tax = taxable * (settings.taxRate / 100);
@@ -314,25 +342,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const net = gross - (tax + k401 + other);
       const match = gross * (settings.employerMatch / 100);
       const retire = k401 + match;
+      const takeHome = net + (e.cashTips || 0) - (e.tipOuts || 0);
       return [
         e.date, e.role,
-        e.hours.toFixed(2), e.tips.toFixed(2), rate.toFixed(2),
-        gross.toFixed(2), k401.toFixed(2), taxable.toFixed(2),
+        e.hours.toFixed(2), (e.tips || 0).toFixed(2),
+        (e.cashTips || 0).toFixed(2), (e.tipOuts || 0).toFixed(2),
+        rate.toFixed(2), gross.toFixed(2),
+        k401.toFixed(2), taxable.toFixed(2),
         tax.toFixed(2), other.toFixed(2), net.toFixed(2),
-        match.toFixed(2), retire.toFixed(2)
+        takeHome.toFixed(2), match.toFixed(2), retire.toFixed(2)
       ];
     });
     const csv = [header.join(","), ...rows.map(r => r.join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = "income_tracker_export.csv";
-    a.click();
+    a.href = url; a.download = "income_tracker_export.csv"; a.click();
     URL.revokeObjectURL(url);
   });
-
-  // ---------- IMPORT CSV ----------
   document.getElementById("import-csv").addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -342,23 +369,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const lines = ev.target.result.trim().split("\n").slice(1);
         let imported = 0;
         for (const line of lines) {
-          const [date, role, hours, tips] = line.split(",");
-          const newEntry = { id: crypto.randomUUID(), date, role, hours: parseFloat(hours), tips: parseFloat(tips) };
-          if (!entries.some(x => x.date === date && x.role === role && Math.abs(x.hours - newEntry.hours) < .01 && Math.abs(x.tips - newEntry.tips) < .01)) {
+          const parts = line.split(",");
+          const [date, role, hours, tips, cashTips, tipOuts] = parts;
+          const newEntry = { id: crypto.randomUUID(), date, role, hours: parseFloat(hours), tips: parseFloat(tips), cashTips: parseFloat(cashTips), tipOuts: parseFloat(tipOuts) };
+          if (!entries.some(x => x.date === date && x.role === role && Math.abs(x.hours - newEntry.hours) < .01)) {
             entries.push(newEntry); imported++;
           }
         }
-        saveEntries();
-        refreshWeekTable();
+        saveEntries(); refreshWeekTable();
         alert(`Imported ${imported} entries`);
-      } catch (err) {
-        alert("Bad CSV: " + err.message);
-      }
+      } catch (err) { alert("Bad CSV: " + err.message); }
     };
     reader.readAsText(file);
   });
-
-  // ---------- RESET ----------
   document.getElementById("reset-data").addEventListener("click", () => {
     if (confirm("Reset ALL data?")) {
       localStorage.clear();
@@ -366,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ---------- Startup ----------
+  // ---------- Init ----------
   renderSettings();
   refreshWeekTable();
   refreshRoleSelect();
