@@ -4,19 +4,238 @@ document.addEventListener("DOMContentLoaded", () => {
   const LS_SETTINGS = "it_settings_v2";
   const LS_ENTRIES = "it_entries_v2";
 
-  // ---------- App State ----------
-  let settings = loadSettings() || {
-    taxRate: 12,
-    k401Rate: 5,
-    employerMatch: 3,
-    otherDeductions: 0,
-    theme: "dark",
-    roles: { "Server": 10.00, "Host": 18.00 }
-  };
-  let entries = loadEntries() || [];
-  let currentMonthFilter = "all";
+  // ---------- IndexedDB ----------
+  const DB_NAME = "incomeTrackerDB";
+  const DB_VERSION = 1;
+  const STORE_SETTINGS = "settings";
+  const STORE_ENTRIES = "entries";
+  const SETTINGS_KEY = "current";
 
-  if (!settings.theme) settings.theme = "dark";
+  let dbPromise;
+
+  function getDefaultSettings() {
+    return {
+      taxRate: 12,
+      k401Rate: 5,
+      employerMatch: 3,
+      otherDeductions: 0,
+      theme: "dark",
+      roles: { "Server": 10.00, "Host": 18.00 }
+    };
+  }
+
+  function deepClone(value) {
+    if (typeof structuredClone === "function") {
+      return structuredClone(value);
+    }
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function promisifyRequest(request) {
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  function getDb() {
+    if (!dbPromise) {
+      dbPromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(STORE_SETTINGS)) {
+            db.createObjectStore(STORE_SETTINGS, { keyPath: "id" });
+          }
+          if (!db.objectStoreNames.contains(STORE_ENTRIES)) {
+            db.createObjectStore(STORE_ENTRIES, { keyPath: "id" });
+          }
+        };
+        request.onsuccess = () => {
+          const db = request.result;
+          db.onversionchange = () => {
+            db.close();
+          };
+          resolve(db);
+        };
+        request.onerror = () => reject(request.error);
+      });
+    }
+    return dbPromise;
+  }
+
+  async function initStorage() {
+    const db = await getDb();
+    await migrateLocalStorageIfNeeded(db);
+    return db;
+  }
+
+  async function migrateLocalStorageIfNeeded(db) {
+    const hasLegacySettings = localStorage.getItem(LS_SETTINGS);
+    const hasLegacyEntries = localStorage.getItem(LS_ENTRIES);
+
+    if (!hasLegacySettings && !hasLegacyEntries) return;
+
+    const tx = db.transaction([STORE_SETTINGS, STORE_ENTRIES], "readwrite");
+    const settingsStore = tx.objectStore(STORE_SETTINGS);
+    const entriesStore = tx.objectStore(STORE_ENTRIES);
+
+    const existingSettings = await promisifyRequest(settingsStore.get(SETTINGS_KEY));
+    const entryCount = await promisifyRequest(entriesStore.count());
+
+    if (!existingSettings && hasLegacySettings) {
+      try {
+        const parsed = JSON.parse(hasLegacySettings);
+        if (parsed && typeof parsed === "object") {
+          await promisifyRequest(settingsStore.put({ id: SETTINGS_KEY, value: parsed }));
+        }
+      } catch (err) {
+        console.error("Failed to migrate legacy settings", err);
+      }
+    }
+
+    if (!entryCount && hasLegacyEntries) {
+      try {
+        const parsedEntries = JSON.parse(hasLegacyEntries);
+        if (Array.isArray(parsedEntries)) {
+          for (const entry of parsedEntries) {
+            if (entry && entry.id) {
+              await promisifyRequest(entriesStore.put(entry));
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to migrate legacy entries", err);
+      }
+    }
+
+    tx.commit?.();
+
+    localStorage.removeItem(LS_SETTINGS);
+    localStorage.removeItem(LS_ENTRIES);
+  }
+
+  async function loadSettings() {
+    const db = await getDb();
+    const tx = db.transaction(STORE_SETTINGS, "readonly");
+    const store = tx.objectStore(STORE_SETTINGS);
+    const record = await promisifyRequest(store.get(SETTINGS_KEY));
+    tx.commit?.();
+    return record ? record.value : null;
+  }
+
+  async function saveSettings() {
+    const db = await getDb();
+    const tx = db.transaction(STORE_SETTINGS, "readwrite");
+    const store = tx.objectStore(STORE_SETTINGS);
+    await promisifyRequest(store.put({ id: SETTINGS_KEY, value: settings }));
+    tx.commit?.();
+  }
+
+  async function loadEntries() {
+    const db = await getDb();
+    const tx = db.transaction(STORE_ENTRIES, "readonly");
+    const store = tx.objectStore(STORE_ENTRIES);
+    const all = await promisifyRequest(store.getAll());
+    tx.commit?.();
+    return all || [];
+  }
+
+  async function saveEntries() {
+    const db = await getDb();
+    const tx = db.transaction(STORE_ENTRIES, "readwrite");
+    const store = tx.objectStore(STORE_ENTRIES);
+    await promisifyRequest(store.clear());
+    for (const entry of entries) {
+      await promisifyRequest(store.put(entry));
+    }
+    tx.commit?.();
+  }
+
+  async function clearAllData() {
+    const existing = await getDb();
+    existing.close();
+    dbPromise = undefined;
+    await new Promise((resolve, reject) => {
+      const req = indexedDB.deleteDatabase(DB_NAME);
+      req.onsuccess = req.onblocked = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+    await initStorage();
+  }
+
+  async function snapshotSettings() {
+    const db = await getDb();
+    const tx = db.transaction(STORE_SETTINGS, "readonly");
+    const store = tx.objectStore(STORE_SETTINGS);
+    const record = await promisifyRequest(store.get(SETTINGS_KEY));
+    tx.commit?.();
+    return record ? deepClone(record.value) : null;
+  }
+
+  async function snapshotEntries() {
+    const db = await getDb();
+    const tx = db.transaction(STORE_ENTRIES, "readonly");
+    const store = tx.objectStore(STORE_ENTRIES);
+    const all = await promisifyRequest(store.getAll());
+    tx.commit?.();
+    return all ? all.map(entry => ({ ...entry })) : [];
+  }
+
+  function ensureToastContainer() {
+    let container = document.querySelector(".toast-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.className = "toast-container";
+      document.body.appendChild(container);
+    }
+    return container;
+  }
+
+  function showToast(message, duration = 4000) {
+    if (!message) return;
+    const container = ensureToastContainer();
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add("visible");
+    });
+
+    setTimeout(() => {
+      toast.classList.remove("visible");
+      setTimeout(() => {
+        toast.remove();
+        if (!container.hasChildNodes()) {
+          container.remove();
+        }
+      }, 250);
+    }, duration);
+  }
+
+  function sanitizeBackupEntry(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    const date = typeof raw.date === "string" ? raw.date : null;
+    const role = typeof raw.role === "string" ? raw.role : null;
+    const hours = Number(raw.hours);
+    if (!date || !role || Number.isNaN(hours)) return null;
+    return {
+      id: typeof raw.id === "string" && raw.id ? raw.id : crypto.randomUUID(),
+      date,
+      role,
+      hours,
+      tips: Number(raw.tips) || 0,
+      cashTips: Number(raw.cashTips) || 0,
+      tipOuts: Number(raw.tipOuts) || 0
+    };
+  }
+
+  // ---------- App State ----------
+  let settings = getDefaultSettings();
+  let entries = [];
+  let currentMonthFilter = "all";
 
   function applyTheme(theme) {
     document.body.classList.remove("theme-dark", "theme-light");
@@ -29,6 +248,31 @@ document.addEventListener("DOMContentLoaded", () => {
   function monthLabelFromKey(key) {
     const date = new Date(`${key}-01T00:00:00`);
     return monthNames.format(date);
+  }
+
+  function syncYtdLabels() {
+    const labelMap = {
+      "stat-gross": "Year-to-Date Gross:",
+      "avg-gross": "Average Weekly Gross:",
+      "stat-tax": "Year-to-Date Tax:",
+      "avg-tax": "Average Weekly Tax:",
+      "stat-retire": "Year-to-Date Retirement:",
+      "avg-retire": "Average Weekly Retirement:",
+      "stat-net": "Year-to-Date Net:",
+      "avg-net": "Average Weekly Net:",
+      "stat-tipouts": "Year-to-Date Tip-Outs:",
+      "avg-tipouts": "Average Weekly Tip-Outs:",
+      "stat-takehome": "Year-to-Date Take-Home:",
+      "avg-takehome": "Average Weekly Take-Home:"
+    };
+
+    Object.entries(labelMap).forEach(([id, text]) => {
+      const valueEl = document.getElementById(id);
+      const labelEl = valueEl?.previousElementSibling;
+      if (labelEl && labelEl.tagName === "STRONG") {
+        labelEl.textContent = text;
+      }
+    });
   }
 
   function refreshMonthFilterOptions(weeks) {
@@ -78,12 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return toISO(d);
   }
 
-  // ---------- Storage ----------
-  function saveSettings() { localStorage.setItem(LS_SETTINGS, JSON.stringify(settings)); }
-  function loadSettings() { try { return JSON.parse(localStorage.getItem(LS_SETTINGS)); } catch { return null; } }
-  function saveEntries() { localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
-  function loadEntries() { try { return JSON.parse(localStorage.getItem(LS_ENTRIES)); } catch { return null; } }
-
   // ---------- Role Manager ----------
   function refreshRoleSelect() {
     const sel = document.getElementById("entry-role");
@@ -107,11 +345,11 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(tr);
     }
     tbody.querySelectorAll("button[data-role]").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
         const r = btn.getAttribute("data-role");
         if (confirm(`Delete role "${r}"?`)) {
           delete settings.roles[r];
-          saveSettings();
+          await saveSettings();
           renderSettings();
         }
       });
@@ -127,23 +365,23 @@ document.addEventListener("DOMContentLoaded", () => {
     renderRolesTable();
     refreshRoleSelect();
   }
-  document.getElementById("add-role").addEventListener("click", () => {
+  document.getElementById("add-role").addEventListener("click", async () => {
     const name = document.getElementById("role-name").value.trim();
     const rate = parseFloat(document.getElementById("role-rate").value);
     if (!name || !(rate >= 0)) return alert("Enter valid role + rate.");
     settings.roles[name] = rate;
-    saveSettings();
+    await saveSettings();
     document.getElementById("role-name").value = "";
     document.getElementById("role-rate").value = "";
     renderSettings();
   });
-  document.getElementById("save-settings").addEventListener("click", () => {
+  document.getElementById("save-settings").addEventListener("click", async () => {
     settings.taxRate = parseFloat(document.getElementById("set-tax").value) || 0;
     settings.k401Rate = parseFloat(document.getElementById("set-k401").value) || 0;
     settings.employerMatch = parseFloat(document.getElementById("set-match").value) || 0;
     settings.otherDeductions = parseFloat(document.getElementById("set-other").value) || 0;
     settings.theme = document.getElementById("set-theme").value || "dark";
-    saveSettings();
+    await saveSettings();
     refreshWeekTable();
     applyTheme(settings.theme);
     alert("Settings saved.");
@@ -151,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------- Daily Entry ----------
   document.getElementById("entry-date").value = toISO(new Date());
-  document.getElementById("add-entry").addEventListener("click", () => {
+  document.getElementById("add-entry").addEventListener("click", async () => {
     const date = document.getElementById("entry-date").value;
     const role = document.getElementById("entry-role").value;
     const hours = parseFloat(document.getElementById("entry-hours").value);
@@ -166,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
       date, role, hours,
       tips, cashTips, tipOuts
     });
-    saveEntries();
+    await saveEntries();
 
     document.getElementById("entry-hours").value = "";
     document.getElementById("entry-tips").value = "";
@@ -329,9 +567,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const t = wk.totals;
         const tr = document.createElement("tr");
         tr.setAttribute("data-week-key", wk.key);
+        const detailsId = `details-${wk.key}`;
         tr.innerHTML = `
       <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)}–${fmtDate(wk.weekEnd)}</strong></span></button></td>
-      <td class="num mobile-extra" data-label="Hours Worked">${t.hours.toFixed(2)} h</td>
+      <td class="num" data-label="Hours Worked">${t.hours.toFixed(2)} h</td>
       <td class="num mobile-extra" data-label="Hourly Wages">${fmtMoney(t.hourlyPay)}</td>
       <td class="num mobile-extra" data-label="Total Credit Card Tips">${fmtMoney(t.tips)}</td>
       <td class="num mobile-extra" data-label="Total Cash Tips">${fmtMoney(t.cashTips)}</td>
@@ -346,17 +585,18 @@ document.addEventListener("DOMContentLoaded", () => {
       <td class="num mobile-extra" data-label="Employer Match">${fmtMoney(t.match)}</td>
       <td class="mobile-actions" data-label="">
         <div class="action-stack">
-          <button class="btn-ghost" data-toggle="${wk.key}">Daily Breakdown</button>
-          <p class="mobile-hint">Scroll horizontally for more info. Delete options appear inside the daily breakdown.</p>
+          <button class="btn-ghost" data-toggle="${wk.key}" aria-expanded="false" aria-controls="${detailsId}">Daily Breakdown</button>
+          <p class="mobile-hint">Tap the row to reveal more metrics. Delete options appear inside the daily breakdown.</p>
         </div>
       </td>`;
         tbody.appendChild(tr);
 
         const details = document.createElement("tr");
         details.className = "week-details";
-        details.style.display = "none";
+        details.id = detailsId;
+        details.hidden = true;
         const colCount = document.querySelector("#weekly-table thead tr").children.length;
-        details.innerHTML = `<td colspan="${colCount}"><div class="details-header">Daily Breakdown</div>${weekDetailsHTML(wk)}</td>`;
+        details.innerHTML = `<td colspan="${colCount}"><div class="details-header">Daily Breakdown</div><div class="details-table-wrapper">${weekDetailsHTML(wk)}</div></td>`;
         tbody.appendChild(details);
       }
     }
@@ -398,36 +638,65 @@ document.addEventListener("DOMContentLoaded", () => {
       const details = row.nextElementSibling;
       if (!details || !details.classList.contains("week-details")) return;
 
-      const isMobile = window.innerWidth <= 768;
-      const open = details.style.display !== "none" && details.style.display !== "";
+      const isOpen = details.classList.contains("details-expanded");
 
-      if (open) {
-        details.style.display = "none";
+      if (isOpen) {
         details.classList.remove("details-expanded");
-        e.target.textContent = "Daily Breakdown";
+        details.hidden = true;
+        if (e.target instanceof HTMLElement) {
+          e.target.textContent = "Daily Breakdown";
+          e.target.setAttribute("aria-expanded", "false");
+        }
       } else {
-        details.style.display = isMobile ? "block" : "table-row";
+        details.hidden = false;
         details.classList.add("details-expanded");
-        e.target.textContent = "Hide Daily Breakdown";
+        if (e.target instanceof HTMLElement) {
+          e.target.textContent = "Hide Daily Breakdown";
+          e.target.setAttribute("aria-expanded", "true");
+        }
       }
     }
   });
-  document.addEventListener("click", e => {
+  document.addEventListener("click", async e => {
     const id = e.target?.getAttribute("data-del");
     if (id && confirm("Delete this entry?")) {
       entries = entries.filter(x => x.id !== id);
-      saveEntries();
+      await saveEntries();
       refreshWeekTable();
+    }
+  });
+  document.addEventListener("click", e => {
+    const btn = e.target?.closest(".info-btn");
+    if (btn) {
+      const help = btn.getAttribute("data-help");
+      showToast(help);
     }
   });
 
   // ---------- Export / Import / Reset ----------
-  document.getElementById("export-data").addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify({ settings, entries }, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "income_tracker_backup.json"; a.click();
-    URL.revokeObjectURL(url);
+  document.getElementById("export-data").addEventListener("click", async () => {
+    try {
+      const [settingsSnapshot, entriesSnapshot] = await Promise.all([
+        snapshotSettings(),
+        snapshotEntries()
+      ]);
+
+      const payload = {
+        settings: settingsSnapshot ?? getDefaultSettings(),
+        entries: entriesSnapshot ?? []
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "income_tracker_backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed", err);
+      alert("Could not export data. Please try again.");
+    }
   });
   document.getElementById("export-csv").addEventListener("click", () => {
     if (!entries.length) return alert("No entries!");
@@ -462,41 +731,77 @@ document.addEventListener("DOMContentLoaded", () => {
     a.href = url; a.download = "income_tracker_export.csv"; a.click();
     URL.revokeObjectURL(url);
   });
-  document.getElementById("import-csv").addEventListener("change", e => {
+  document.getElementById("import-json").addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = ev => {
+    reader.onload = async ev => {
       try {
-        const lines = ev.target.result.trim().split("\n").slice(1);
-        let imported = 0;
-        for (const line of lines) {
-          const parts = line.split(",");
-          const [date, role, hours, tips, cashTips, tipOuts] = parts;
-          const newEntry = { id: crypto.randomUUID(), date, role, hours: parseFloat(hours), tips: parseFloat(tips), cashTips: parseFloat(cashTips), tipOuts: parseFloat(tipOuts) };
-          if (!entries.some(x => x.date === date && x.role === role && Math.abs(x.hours - newEntry.hours) < .01)) {
-            entries.push(newEntry); imported++;
-          }
+        const parsed = JSON.parse(ev.target.result);
+        if (!parsed || typeof parsed !== "object") throw new Error("Invalid JSON structure.");
+
+        const defaults = getDefaultSettings();
+        const incomingSettings = parsed.settings && typeof parsed.settings === "object" ? parsed.settings : {};
+        const mergedSettings = {
+          ...defaults,
+          ...incomingSettings,
+          roles: { ...defaults.roles, ...(incomingSettings.roles || {}) }
+        };
+
+        const incomingEntries = Array.isArray(parsed.entries) ? parsed.entries : [];
+        const sanitizedEntries = [];
+        for (const rawEntry of incomingEntries) {
+          const clean = sanitizeBackupEntry(rawEntry);
+          if (clean) sanitizedEntries.push(clean);
         }
-        saveEntries(); refreshWeekTable();
-        alert(`Imported ${imported} entries`);
-      } catch (err) { alert("Bad CSV: " + err.message); }
+
+        settings = mergedSettings;
+        entries = sanitizedEntries;
+
+        await saveSettings();
+        await saveEntries();
+
+        applyTheme(settings.theme);
+        renderSettings();
+        refreshWeekTable();
+        refreshRoleSelect();
+
+        alert(`Restored ${sanitizedEntries.length} entries from backup.`);
+      } catch (err) {
+        console.error("Restore failed", err);
+        alert("Could not restore from JSON: " + err.message);
+      } finally {
+        e.target.value = "";
+      }
     };
     reader.readAsText(file);
   });
-  document.getElementById("reset-data").addEventListener("click", () => {
+  document.getElementById("reset-data").addEventListener("click", async () => {
     if (confirm("Reset ALL data?")) {
-      localStorage.clear();
-      location.reload();
+      try {
+        await clearAllData();
+        settings = getDefaultSettings();
+        entries = [];
+        await saveSettings();
+        await saveEntries();
+        applyTheme(settings.theme);
+        renderSettings();
+        refreshWeekTable();
+        alert("All data has been reset.");
+      } catch (err) {
+        console.error("Failed to reset data", err);
+        alert("Could not reset data. Please reload and try again.");
+      }
     }
   });
 
   const themeSelectEl = document.getElementById("set-theme");
   if (themeSelectEl) {
-    themeSelectEl.addEventListener("change", e => {
+    themeSelectEl.addEventListener("change", async e => {
       const theme = e.target.value;
       applyTheme(theme);
       settings.theme = theme;
+      await saveSettings();
     });
   }
 
@@ -509,9 +814,40 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------- Init ----------
-  renderSettings();
-  applyTheme(settings.theme);
-  refreshWeekTable();
-  refreshRoleSelect();
+  (async () => {
+    try {
+      await initStorage();
+      const storedSettings = await loadSettings();
+      const defaults = getDefaultSettings();
+      settings = storedSettings
+        ? {
+          ...defaults,
+          ...storedSettings,
+          roles: { ...defaults.roles, ...(storedSettings.roles || {}) }
+        }
+        : defaults;
+
+      const storedEntries = await loadEntries();
+      entries = Array.isArray(storedEntries) ? storedEntries : [];
+
+      if (!settings.theme) settings.theme = "dark";
+
+      syncYtdLabels();
+      renderSettings();
+      applyTheme(settings.theme);
+      refreshWeekTable();
+      refreshRoleSelect();
+    } catch (err) {
+      console.error("Failed to initialize storage", err);
+      alert("Could not load saved data. Using defaults for this session.");
+      settings = getDefaultSettings();
+      entries = [];
+      syncYtdLabels();
+      renderSettings();
+      applyTheme(settings.theme);
+      refreshWeekTable();
+      refreshRoleSelect();
+    }
+  })();
 
 });
