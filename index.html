@@ -10,15 +10,17 @@
   </head>
   <body>
     <div class="wrap">
-      <h1>🍽️ Restaurant Income Tracker</h1>
-      <!-- NAVIGATION BAR FOR MOBILE LAYOUT -->
-      <nav class="top-nav">
-        <button data-page="entry">Daily Entry</button>
-        <button data-page="summary">Weekly Summary</button>
-        <button data-page="ytd">Year-to-Date</button>
-        <button data-page="settings">Settings</button>
-      </nav>
-      <main>
+      <header class="app-header">
+        <h1>🍽️ Restaurant Income Tracker</h1>
+        <!-- NAVIGATION BAR FOR MOBILE-FIRST LAYOUT -->
+        <nav class="top-nav" aria-label="Primary pages">
+          <button data-page="entry" aria-controls="page-entry">Daily Entry</button>
+          <button data-page="summary" aria-controls="page-summary">Weekly Summary</button>
+          <button data-page="ytd" aria-controls="page-ytd">Year-to-Date</button>
+          <button data-page="settings" aria-controls="page-settings">Settings</button>
+        </nav>
+      </header>
+      <main class="page-stack">
         <section id="page-settings" class="page">
           <!-- SETTINGS + ROLE MANAGER -->
           <div class="grid two">
@@ -27,19 +29,19 @@
               <h2>⚙️ Settings</h2>
               <label
                 >Tax Rate (%)
-                <input type="number" id="set-tax" step="0.1" />
+                <input type="number" id="set-tax" step="0.1" inputmode="decimal" />
               </label>
               <label
                 >401(k) (% of gross)
-                <input type="number" id="set-k401" step="0.1" />
+                <input type="number" id="set-k401" step="0.1" inputmode="decimal" />
               </label>
               <label
                 >Employer Match (%)
-                <input type="number" id="set-match" step="0.1" />
+                <input type="number" id="set-match" step="0.1" inputmode="decimal" />
               </label>
               <label
                 >Other Deductions (%)
-                <input type="number" id="set-other" step="0.1" />
+                <input type="number" id="set-other" step="0.1" inputmode="decimal" />
               </label>
               <label
                 >App Color Scheme
@@ -66,6 +68,7 @@
                   id="role-rate"
                   step="0.01"
                   placeholder="10.00"
+                  inputmode="decimal"
                 />
               </label>
               <button id="add-role" class="btn-ghost">Add / Update Role</button>
@@ -93,23 +96,34 @@
             </p>
 
             <div class="button-row">
-              <button id="export-data" class="btn-ghost">Export JSON</button>
-              <button id="export-csv" class="btn-ghost">Export CSV</button>
+              <div class="button-with-help">
+                <button id="export-data" class="btn-ghost">Backup Data</button>
+                <button type="button" class="info-btn" data-help="Creates a JSON backup file containing your saved settings and entries.">ⓘ</button>
+              </div>
+              <div class="button-with-help">
+                <button id="export-csv" class="btn-ghost">Export Data</button>
+                <button type="button" class="info-btn" data-help="Exports a CSV spreadsheet of all entries for spreadsheets or further analysis.">ⓘ</button>
+              </div>
             </div>
 
             <div class="button-row">
-              <button id="reset-data" class="btn-danger">Reset All Data</button>
-              <!-- Styled Import CSV -->
-              <label
-                for="import-csv"
-                class="btn-ghost small"
-                style="cursor: pointer"
-                >📥 Import CSV</label
-              >
+              <div class="button-with-help">
+                <label
+                  for="import-json"
+                  class="btn-ghost small"
+                  style="cursor: pointer"
+                  >🪄 Restore from Backup</label
+                >
+                <button type="button" class="info-btn" data-help="Restores a JSON backup created from this app. Existing data will be replaced.">ⓘ</button>
+              </div>
+              <div class="button-with-help">
+                <button id="reset-data" class="btn-danger">Reset All Data</button>
+                <button type="button" class="info-btn" data-help="Deletes every entry and setting from this device. This action cannot be undone without a backup.">ⓘ</button>
+              </div>
               <input
                 type="file"
-                id="import-csv"
-                accept=".csv"
+                id="import-json"
+                accept=".json,application/json"
                 style="display: none"
               />
             </div>
@@ -148,6 +162,7 @@
                   step="0.1"
                   placeholder="e.g. 6.5"
                   required
+                  inputmode="decimal"
                 />
               </label>
 
@@ -158,6 +173,7 @@
                   id="entry-tips"
                   step="0.01"
                   placeholder="Credit tips"
+                  inputmode="decimal"
                 />
               </label>
 
@@ -168,6 +184,7 @@
                   id="entry-cash"
                   step="0.01"
                   placeholder="Cash tips"
+                  inputmode="decimal"
                 />
               </label>
 
@@ -178,6 +195,7 @@
                   id="entry-tipouts"
                   step="0.01"
                   placeholder="Tip-outs given"
+                  inputmode="decimal"
                 />
               </label>
 
@@ -250,53 +268,53 @@
               </div>
 
               <div>
-                <strong>YTD Gross:</strong> <span id="stat-gross">$0.00</span>
+                <strong>Year-to-Date Gross:</strong> <span id="stat-gross">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Gross:</strong>
+                <strong>Average Weekly Gross:</strong>
                 <span id="avg-gross">$0.00</span>
               </div>
 
               <div>
-                <strong>YTD Tax:</strong> <span id="stat-tax">$0.00</span>
+                <strong>Year-to-Date Tax:</strong> <span id="stat-tax">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Tax:</strong>
+                <strong>Average Weekly Tax:</strong>
                 <span id="avg-tax">$0.00</span>
               </div>
 
               <div>
-                <strong>YTD Retirement:</strong>
+                <strong>Year-to-Date Retirement:</strong>
                 <span id="stat-retire">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Retirement:</strong>
+                <strong>Average Weekly Retirement:</strong>
                 <span id="avg-retire">$0.00</span>
               </div>
 
               <div>
-                <strong>YTD Net:</strong> <span id="stat-net">$0.00</span>
+                <strong>Year-to-Date Net:</strong> <span id="stat-net">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Net:</strong>
+                <strong>Average Weekly Net:</strong>
                 <span id="avg-net">$0.00</span>
               </div>
 
               <div>
-                <strong>YTD Tip-Outs:</strong>
+                <strong>Year-to-Date Tip-Outs:</strong>
                 <span id="stat-tipouts">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Tip-Outs:</strong>
+                <strong>Average Weekly Tip-Outs:</strong>
                 <span id="avg-tipouts">$0.00</span>
               </div>
 
               <div>
-                <strong>YTD Take-Home:</strong>
+                <strong>Year-to-Date Take-Home:</strong>
                 <span id="stat-takehome">$0.00</span>
               </div>
               <div>
-                <strong>Avg Weekly Take-Home:</strong>
+                <strong>Average Weekly Take-Home:</strong>
                 <span id="avg-takehome">$0.00</span>
               </div>
             </div>
@@ -320,16 +338,33 @@
     </script>
     <!--NAVIGATION BAR SCRIPT-->
     <script>
-      document.querySelectorAll(".top-nav button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document
-            .querySelectorAll(".page")
-            .forEach((p) => p.classList.remove("active"));
-          document
-            .getElementById("page-" + btn.dataset.page)
-            .classList.add("active");
+      const navButtons = Array.from(document.querySelectorAll(".top-nav button"));
+      const pages = Array.from(document.querySelectorAll(".page"));
+
+      const activatePage = (pageKey) => {
+        const targetId = `page-${pageKey}`;
+        pages.forEach((page) => {
+          page.classList.toggle("active", page.id === targetId);
         });
+
+        navButtons.forEach((button) => {
+          const isActive = button.dataset.page === pageKey;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", isActive ? "true" : "false");
+          if (isActive) {
+            button.setAttribute("aria-current", "page");
+          } else {
+            button.removeAttribute("aria-current");
+          }
+        });
+      };
+
+      navButtons.forEach((button) => {
+        button.addEventListener("click", () => activatePage(button.dataset.page));
       });
+
+      const initialPage = document.querySelector(".page.active")?.id.replace("page-", "") || "entry";
+      activatePage(initialPage);
     </script>
   </body>
 </html>
