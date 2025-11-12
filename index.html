@@ -32,6 +32,9 @@
               <li><strong>iPhone:</strong> tap <em>Share → Add to Home Screen</em></li>
               <li><strong>Android:</strong> tap the <em>menu (⋮)</em> and choose <em>Add to Home screen</em></li>
             </ul>
+            <p class="muted">
+              For more information, see the <a href="https://github.com/marjo-dev/take-home-tally/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a> on GitHub.
+            </p>
           </div>
         </div>
         <!-- NAVIGATION BAR FOR MOBILE-FIRST LAYOUT -->
@@ -49,24 +52,33 @@
             <!-- SETTINGS -->
             <div class="card">
               <h2>⚙️ Settings</h2>
-              <p class="muted">
-                Set your tax rates, retirement contributions, employer match, and any other deductions. 
-                These values are saved locally and used to estimate your weekly take-home pay.
-              </p>
-              <p class="muted">
-                Note: This app provides estimates only — it doesn’t calculate your exact taxes or retirement contributions. 
-                Your actual paycheck may differ based on your employer’s payroll system and specific withholdings.
-              </p>
-              <p class="muted">
-                By default, a 20% tax deduction is applied to taxable income — a reasonable starting point for most tipped workers.
-              </p>
-              <p class="muted">
-                If you don’t have a 401(k), Roth 401(k), or employer match, you can leave those at 0%. 
-                The same goes for any other optional deductions.
-              </p>
-              <p class="muted">
-                You can update these settings anytime to refresh your estimated take-home pay.
-              </p>
+              <div class="settings-description">
+                <button type="button" class="settings-description-toggle expanded" aria-expanded="true" aria-controls="settings-description-content">
+                  <span class="toggle-label">About Settings</span>
+                  <span class="toggle-hint muted">tap to hide</span>
+                </button>
+                <div id="settings-description-content" class="settings-description-content expanded">
+                  <p class="muted">
+                    Set your tax rates, retirement contributions, employer match, and any other deductions. 
+                    These values are saved locally and used to estimate your weekly take-home pay.
+                  </p>
+                  <p class="muted">
+                    Note: This app provides estimates only — it doesn't calculate your exact taxes or retirement contributions. 
+                    Your actual paycheck may differ based on your employer's payroll system and specific withholdings.
+                  </p>
+                  <p class="muted">
+                    By default, a 20% tax deduction is applied to taxable income — a reasonable starting point for most tipped workers.
+                  </p>
+                  <p class="muted">
+                    If you don't have a 401(k), Roth 401(k), or employer match, you can leave those at 0%. 
+                    The same goes for any other optional deductions.
+                  </p>
+                  <p class="muted">
+                    You can update these settings anytime to refresh your estimated take-home pay.
+                  </p>
+                </div>
+              </div>
+              <div class="card-divider"></div>
               <div class="entry-column">
                 <div class="label-group">
                   <label
@@ -115,6 +127,7 @@
             <div class="card">
               <h2>👤 Role Manager</h2>
               <p class="muted">Set up your roles and hourly rates here. These roles will appear in the Daily Entry dropdown menu when you log your shift. You can add or edit roles as needed, and delete any roles you don't need anymore.</p>
+              <div class="card-divider"></div>
               <div class="entry-column">
                 <div class="label-group">
                   <label
@@ -495,6 +508,33 @@
       document.addEventListener("DOMContentLoaded", () => {
         const toggleButton = document.querySelector(".app-description-toggle");
         const content = document.getElementById("app-description-content");
+        
+        if (toggleButton && content) {
+          toggleButton.addEventListener("click", () => {
+            const isExpanded = content.classList.contains("expanded");
+            
+            if (isExpanded) {
+              content.classList.remove("expanded");
+              toggleButton.classList.remove("expanded");
+              toggleButton.setAttribute("aria-expanded", "false");
+              const hint = toggleButton.querySelector(".toggle-hint");
+              if (hint) hint.textContent = "tap to expand";
+            } else {
+              content.classList.add("expanded");
+              toggleButton.classList.add("expanded");
+              toggleButton.setAttribute("aria-expanded", "true");
+              const hint = toggleButton.querySelector(".toggle-hint");
+              if (hint) hint.textContent = "tap to hide";
+            }
+          });
+        }
+      });
+    </script>
+    <!--SETTINGS DESCRIPTION TOGGLE SCRIPT-->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggleButton = document.querySelector(".settings-description-toggle");
+        const content = document.getElementById("settings-description-content");
         
         if (toggleButton && content) {
           toggleButton.addEventListener("click", () => {
