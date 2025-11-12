@@ -6,6 +6,10 @@
     <title>Restaurant Income Tracker</title>
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#121212" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="IncomeTracker" />
+    <link rel="apple-touch-icon" href="icons/icon-96.png" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -335,6 +339,21 @@
             .catch((err) => console.error("❌ Service Worker failed", err));
         });
       }
+
+      // PWA Install Prompt Handler
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log('✅ Install prompt available');
+        // You can show a custom install button here if needed
+      });
+
+      // Log install event
+      window.addEventListener('appinstalled', () => {
+        console.log('✅ PWA installed successfully');
+        deferredPrompt = null;
+      });
     </script>
     <!--NAVIGATION BAR SCRIPT-->
     <script>

@@ -2,7 +2,8 @@
   "name": "Restaurant Income Tracker",
   "short_name": "IncomeTracker",
   "description": "Track daily hours, tips, and weekly income with offline support.",
-  "start_url": "./index.html",
+  "start_url": "/take-home-tally/",
+  "scope": "/take-home-tally/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#121212",
@@ -11,7 +12,8 @@
     {
       "src": "icons/icon-96.png",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
