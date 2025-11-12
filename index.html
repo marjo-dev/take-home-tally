@@ -6,9 +6,9 @@
     <title>TakeHome Tally</title>
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#121212" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="IncomeTracker" />
+    <meta name="apple-mobile-web-app-title" content="TakeHome Tally" />
     <link rel="apple-touch-icon" href="icons/icon-96.png" />
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -49,53 +49,72 @@
             <!-- SETTINGS -->
             <div class="card">
               <h2>⚙️ Settings</h2>
-              <label
-                >Tax Rate (%)
-                <input type="number" id="set-tax" step="0.1" inputmode="decimal" />
-              </label>
-              <label
-                >401(k) (% of gross)
-                <input type="number" id="set-k401" step="0.1" inputmode="decimal" />
-              </label>
-              <label
-                >Employer Match (%)
-                <input type="number" id="set-match" step="0.1" inputmode="decimal" />
-              </label>
-              <label
-                >Other Deductions (%)
-                <input type="number" id="set-other" step="0.1" inputmode="decimal" />
-              </label>
-              <label
-                >App Color Scheme
-                <select id="set-theme">
-                  <option value="dark">Dark</option>
-                  <option value="light">Light</option>
-                </select>
-              </label>
-              <button id="save-settings">Save Settings</button>
-              <span class="muted">These settings are saved locally in your app.</span>
+              <p class="muted">Set up your tax rates, 401(k) contributions, employer match, and other deductions here. These settings will be used to calculate your take-home pay each week. These settings are saved locally in your app.</p>
+              <div class="entry-column">
+                <div class="label-group">
+                  <label
+                    ><span>Tax Rate (%)</span>
+                    <input type="number" id="set-tax" step="0.1" inputmode="decimal" />
+                  </label>
+                </div>
+                <div class="label-group">
+                  <label
+                    ><span>401(k) (% of gross)</span>
+                    <input type="number" id="set-k401" step="0.1" inputmode="decimal" />
+                  </label>
+                </div>
+                <div class="label-group">
+                  <label
+                    ><span>Employer Match (%)</span>
+                    <input type="number" id="set-match" step="0.1" inputmode="decimal" />
+                  </label>
+                </div>
+                <div class="label-group">
+                  <label
+                    ><span>Other Deductions (%)</span>
+                    <input type="number" id="set-other" step="0.1" inputmode="decimal" />
+                  </label>
+                </div>
+                <div class="label-group">
+                  <label
+                    ><span>App Color Scheme</span>
+                    <select id="set-theme">
+                      <option value="dark">Dark</option>
+                      <option value="light">Light</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <button id="save-settings">Save Settings</button><br>
             </div>
 
             <!-- ROLE MANAGER -->
             <div class="card">
               <h2>👤 Role Manager</h2>
-              <label
-                >Role Name
-                <input type="text" id="role-name" placeholder="Server" />
-              </label>
-              <label
-                >Hourly Rate ($)
-                <input
-                  type="number"
-                  id="role-rate"
-                  step="0.01"
-                  placeholder="10.00"
-                  inputmode="decimal"
-                />
-              </label>
-              <button id="add-role" class="btn-ghost">Add / Update Role</button>
+              <p class="muted">Set up your roles and hourly rates here. These roles will appear in the Daily Entry dropdown menu when you log your shift. You can add or edit roles as needed, and delete any roles you don't need anymore.</p>
+              <div class="entry-column">
+                <div class="label-group">
+                  <label
+                    ><span>Role Name</span>
+                    <input type="text" id="role-name" placeholder="Add role here" />
+                  </label>
+                </div>
+                <div class="label-group">
+                  <label
+                    ><span>Hourly Rate ($)</span>
+                    <input
+                      type="number"
+                      id="role-rate"
+                      step="0.01"
+                      placeholder="example: 10.00"
+                      inputmode="decimal"
+                    />
+                  </label>
+                </div>
+              </div>
+              <button id="add-role">Add / Update Role</button>
 
-              <div class="table-wrap" style="margin-top: 10px">
+              <div class="table-wrap" style="margin-top: 10px; width: 100%">
                 <table id="roles-table">
                   <thead>
                     <tr>
@@ -106,41 +125,37 @@
                   </thead>
                   <tbody></tbody>
                 </table>
-              </div>
-              <div class="muted">Roles appear in the Daily Entry dropdown.</div>
+              </div>              
             </div>
 
             <!-- BACKUP / RESTORE -->
-            <div class="card center">
+            <div class="card">
               <h2>💾 Backup / Restore</h2>
               <p class="muted">
                 Here is where you can back up your app data, or export your entries to a spreadsheet. You can also reset everything if you want to start fresh, and restore from a backup.
               </p>
 
-              <div class="button-row">
+              <div class="button-list">
                 <div class="button-with-help">
-                  <button id="export-data" class="btn-ghost">Backup Data</button>
-                  <button type="button" class="info-btn" data-help="Creates a JSON backup file containing your saved settings and entries. This file can be imported later to restore your data.">ⓘ</button>
+                  <button id="export-data">Backup Data</button>
+                  <button type="button" class="info-btn" data-help="[Backup Data] creates a JSON backup file containing your saved settings and entries. Save it somewhere safe, like your cloud storage. This file can be imported later to restore your data in this app. You can make multiple backups if you want, just be sure to keep track of which one is the most recent.">ⓘ</button>
                 </div>
                 <div class="button-with-help">
-                  <button id="export-csv" class="btn-ghost">Export Data</button>
-                  <button type="button" class="info-btn" data-help="Exports a CSV file of all your entries. This file can be opened in a spreadsheet app like Excel, Numbers, or Google Sheets.">ⓘ</button>
+                  <button id="export-csv">Export Data</button>
+                  <button type="button" class="info-btn" data-help="[Export Data] exports a CSV file of all your entries. This file can be opened in a spreadsheet app like Excel, Numbers, or Google Sheets.">ⓘ</button>
                 </div>
-              </div>
-
-              <div class="button-row">
                 <div class="button-with-help">
                   <label
                     for="import-json"
-                    class="btn-ghost small"
+                    class="button-label"
                     style="cursor: pointer"
                     >🪄 Restore from Backup</label
                   >
-                  <button type="button" class="info-btn" data-help="Restores a previously created JSON backup file. Existing data will be replaced.">ⓘ</button>
+                  <button type="button" class="info-btn" data-help="[Restore from Backup] restores a previously created JSON backup file. Existing data will be replaced. Make sure to choose the most recent backup file to avoid losing any data.">ⓘ</button>
                 </div>
                 <div class="button-with-help">
                   <button id="reset-data" class="btn-danger">Reset All Data</button>
-                  <button type="button" class="info-btn" data-help="Deletes every entry and setting from this device. This action cannot be undone, so make sure you make a backup first if you want to keep your data.">ⓘ</button>
+                  <button type="button" class="info-btn" data-help="[Reset All Data] deletes every entry and setting from this device if you want to start fresh. This action cannot be undone, so make sure you make a backup first if you want to keep your data.">ⓘ</button>
                 </div>
                 <input
                   type="file"
@@ -422,33 +437,35 @@
     </script>
     <!--NAVIGATION BAR SCRIPT-->
     <script>
-      const navButtons = Array.from(document.querySelectorAll(".top-nav button"));
-      const pages = Array.from(document.querySelectorAll(".page"));
+      document.addEventListener("DOMContentLoaded", () => {
+        const navButtons = Array.from(document.querySelectorAll(".top-nav button"));
+        const pages = Array.from(document.querySelectorAll(".page"));
 
-      const activatePage = (pageKey) => {
-        const targetId = `page-${pageKey}`;
-        pages.forEach((page) => {
-          page.classList.toggle("active", page.id === targetId);
-        });
+        const activatePage = (pageKey) => {
+          const targetId = `page-${pageKey}`;
+          pages.forEach((page) => {
+            page.classList.toggle("active", page.id === targetId);
+          });
+
+          navButtons.forEach((button) => {
+            const isActive = button.dataset.page === pageKey;
+            button.classList.toggle("is-active", isActive);
+            button.setAttribute("aria-pressed", isActive ? "true" : "false");
+            if (isActive) {
+              button.setAttribute("aria-current", "page");
+            } else {
+              button.removeAttribute("aria-current");
+            }
+          });
+        };
 
         navButtons.forEach((button) => {
-          const isActive = button.dataset.page === pageKey;
-          button.classList.toggle("is-active", isActive);
-          button.setAttribute("aria-pressed", isActive ? "true" : "false");
-          if (isActive) {
-            button.setAttribute("aria-current", "page");
-          } else {
-            button.removeAttribute("aria-current");
-          }
+          button.addEventListener("click", () => activatePage(button.dataset.page));
         });
-      };
 
-      navButtons.forEach((button) => {
-        button.addEventListener("click", () => activatePage(button.dataset.page));
+        const initialPage = document.querySelector(".page.active")?.id.replace("page-", "") || "entry";
+        activatePage(initialPage);
       });
-
-      const initialPage = document.querySelector(".page.active")?.id.replace("page-", "") || "entry";
-      activatePage(initialPage);
     </script>
     <!--APP DESCRIPTION TOGGLE SCRIPT-->
     <script>

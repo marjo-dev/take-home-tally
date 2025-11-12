@@ -15,12 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getDefaultSettings() {
     return {
-      taxRate: 12,
-      k401Rate: 5,
+      taxRate: 20,
+      k401Rate: 0,
       employerMatch: 3,
       otherDeductions: 0,
       theme: "dark",
-      roles: { "Server": 10.00, "Host": 18.00 }
+      roles: { "Server": 10.00, "Host": 15.00, "Expo": 15.00, "Bartender": 15.00 }
     };
   }
 
@@ -182,37 +182,70 @@ document.addEventListener("DOMContentLoaded", () => {
     return all ? all.map(entry => ({ ...entry })) : [];
   }
 
-  function ensureToastContainer() {
-    let container = document.querySelector(".toast-container");
-    if (!container) {
-      container = document.createElement("div");
-      container.className = "toast-container";
-      document.body.appendChild(container);
-    }
-    return container;
-  }
-
-  function showToast(message, duration = 4000) {
+  function showModal(message) {
     if (!message) return;
-    const container = ensureToastContainer();
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.textContent = message;
-    container.appendChild(toast);
 
+    // Remove existing modal if present
+    const existingModal = document.querySelector(".modal-overlay");
+    if (existingModal) {
+      existingModal.remove();
+      document.body.style.overflow = "";
+    }
+
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = "hidden";
+
+    // Create modal overlay
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+
+    // Create modal content
+    const modal = document.createElement("div");
+    modal.className = "modal";
+
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+    modalContent.textContent = message;
+
+    const closeButton = document.createElement("button");
+    closeButton.className = "modal-close";
+    closeButton.textContent = "Close";
+
+    const closeModal = () => {
+      overlay.classList.remove("visible");
+      document.body.style.overflow = "";
+      setTimeout(() => {
+        overlay.remove();
+      }, 250);
+    };
+
+    closeButton.addEventListener("click", closeModal);
+
+    modal.appendChild(modalContent);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // Show modal with animation
     requestAnimationFrame(() => {
-      toast.classList.add("visible");
+      overlay.classList.add("visible");
     });
 
-    setTimeout(() => {
-      toast.classList.remove("visible");
-      setTimeout(() => {
-        toast.remove();
-        if (!container.hasChildNodes()) {
-          container.remove();
-        }
-      }, 250);
-    }, duration);
+    // Close on overlay click
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {
+        closeModal();
+      }
+    });
+
+    // Close on Escape key
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+        document.removeEventListener("keydown", handleEscape);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
   }
 
   function sanitizeBackupEntry(raw) {
@@ -326,6 +359,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function refreshRoleSelect() {
     const sel = document.getElementById("entry-role");
     sel.innerHTML = "";
+    // Add placeholder option
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Select role here";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    sel.appendChild(placeholder);
+    // Add role options
     for (const r of Object.keys(settings.roles).sort()) {
       const opt = document.createElement("option");
       opt.value = r;
@@ -341,7 +382,10 @@ document.addEventListener("DOMContentLoaded", () => {
       tr.innerHTML = `
       <td>${name}</td>
       <td class="num">${fmtMoney(rate)}</td>
-      <td><button class="btn-danger" data-role="${name}">Delete</button></td>`;
+      <td>
+        <button class="btn-ghost" data-edit-role="${name}" data-edit-rate="${rate}">Edit</button>
+        <button class="btn-danger" data-role="${name}">Delete</button>
+      </td>`;
       tbody.appendChild(tr);
     }
     tbody.querySelectorAll("button[data-role]").forEach(btn => {
@@ -352,6 +396,17 @@ document.addEventListener("DOMContentLoaded", () => {
           await saveSettings();
           renderSettings();
         }
+      });
+    });
+    tbody.querySelectorAll("button[data-edit-role]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const roleName = btn.getAttribute("data-edit-role");
+        const roleRate = btn.getAttribute("data-edit-rate");
+        document.getElementById("role-name").value = roleName;
+        document.getElementById("role-rate").value = roleRate;
+        document.getElementById("role-name").focus();
+        // Scroll to the form if needed
+        document.getElementById("role-name").scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
     });
   }
@@ -410,6 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("entry-tips").value = "";
     document.getElementById("entry-cash").value = "";
     document.getElementById("entry-tipouts").value = "";
+    document.getElementById("entry-role").selectedIndex = 0; // Reset to placeholder
     refreshWeekTable();
   });
 
@@ -670,7 +726,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = e.target?.closest(".info-btn");
     if (btn) {
       const help = btn.getAttribute("data-help");
-      showToast(help);
+      showModal(help);
     }
   });
 

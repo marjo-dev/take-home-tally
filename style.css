@@ -58,26 +58,26 @@ body.theme-light {
   --table-row-alt: #f1f5f9;
 }
 
-/* Navigation bar style for mobile layout */
+/* Navigation bar style for mobile layout - now at bottom as footer */
 .top-nav {
   display: flex;
   justify-content: space-around;
   margin-bottom: 14px;
   background: var(--nav-bg);
   padding: 10px 16px;
-  border-radius: 10px;
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--card-border-strong);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+  border-top: 1px solid var(--card-border-strong);
   backdrop-filter: blur(10px);
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 0;
+  pointer-events: auto;
 }
 
 @media (min-width: 768px) {
@@ -97,6 +97,8 @@ body.theme-light {
   border-radius: 6px;
   transition: all 0.2s ease;
   position: relative;
+  pointer-events: auto;
+  z-index: 1001;
 }
 
 .top-nav button.is-active {
@@ -136,12 +138,12 @@ body {
   color: var(--text);
   font-family: system-ui, sans-serif;
   margin: 0;
-  padding: 76px 16px 16px 16px;
+  padding: 16px 16px 76px 16px;
 }
 
 @media (min-width: 768px) {
   body {
-    padding: 84px 24px 24px 24px;
+    padding: 24px 24px 84px 24px;
   }
 }
 
@@ -199,6 +201,8 @@ h2 {
   transition: background 0.2s ease;
   text-align: left;
   position: relative;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .app-description-toggle:hover {
@@ -350,6 +354,10 @@ select:focus {
   border-color: #60a5fa;
 }
 
+select option:disabled {
+  color: var(--muted);
+}
+
 /* ---------- Buttons ---------- */
 button {
   cursor: pointer;
@@ -362,6 +370,24 @@ button {
 }
 
 button:hover {
+  background: var(--button-bg-hover);
+}
+
+/* Style label as button for file input triggers */
+label.button-label {
+  display: inline-block;
+  cursor: pointer;
+  background: var(--button-bg);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  padding: 8px 12px;
+  transition: background 0.2s;
+  font: inherit;
+  text-align: center;
+}
+
+label.button-label:hover {
   background: var(--button-bg-hover);
 }
 
@@ -401,6 +427,18 @@ button:hover {
   flex-wrap: wrap;
   margin-top: 10px;
 }
+.button-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  border-top: 1px dashed var(--card-border);
+  padding-top: 10px;
+}
+.button-list .button-with-help:not(:last-child) {
+  border-bottom: 1px dashed var(--card-border);
+  padding-bottom: 12px;
+}
 .button-with-help {
   display: flex;
   align-items: center;
@@ -422,32 +460,73 @@ button:hover {
   background: rgba(147, 197, 253, 0.18);
   color: #fff;
 }
-.toast-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+/* Modal styles */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999 !important;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  backdrop-filter: blur(4px);
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.modal-overlay.visible {
+  opacity: 1;
+}
+
+.modal {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border-strong);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 300px;
+  max-width: min(500px, 90vw);
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  z-index: 9999;
-  pointer-events: none;
+  transform: scale(0.95);
+  transition: transform 0.25s ease;
 }
-.toast {
-  background: rgba(18, 18, 18, 0.92);
-  color: #f5f5f5;
-  padding: 12px 16px;
-  border-radius: 8px;
-  min-width: 220px;
-  max-width: min(320px, 80vw);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: auto;
+
+.modal-overlay.visible .modal {
+  transform: scale(1);
 }
-.toast.visible {
-  opacity: 1;
-  transform: translateY(0);
+
+.modal-content {
+  padding: 24px;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-close {
+  margin: 0 24px 24px 24px;
+  padding: 10px 20px;
+  background: var(--button-bg);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--button-bg-hover);
 }
 .muted {
   color: var(--muted);
@@ -527,12 +606,74 @@ button:hover {
 
 .table-wrap {
   overflow-x: auto;
+  width: 100%;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 8px;
+}
+
+/* Ensure roles table spans full card width */
+#roles-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+#roles-table th,
+#roles-table td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+#roles-table th {
+  text-align: center;
+}
+
+#roles-table th:first-child,
+#roles-table td:first-child {
+  width: 35%;
+}
+
+#roles-table td:first-child {
+  padding-left: 2ch;
+}
+
+#roles-table th.num {
+  width: 25%;
+  text-align: center;
+}
+
+#roles-table td.num {
+  width: 25%;
+  text-align: right;
+  padding-right: 2ch;
+}
+
+#roles-table th:last-child,
+#roles-table td:last-child {
+  width: 40%;
+  white-space: nowrap;
+}
+
+#roles-table th:last-child {
+  text-align: center;
+}
+
+#roles-table td:last-child {
+  text-align: center;
+}
+
+#roles-table td:last-child button {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+#roles-table td:last-child button:last-child {
+  margin-right: 0;
 }
 
 .week-cell {
@@ -1437,8 +1578,11 @@ td.takehome strong {
 /* =====================================================
    BACKUP / RESTORE
    ===================================================== */
-.card.center p.muted {
+/* Backup/Restore card specific styling */
+#page-settings .card:last-child p.muted {
   margin-bottom: 10px;
+  border-bottom: 1px dashed var(--card-border);
+  padding-bottom: 10px;
 }
 input[type="file"] {
   display: none;
