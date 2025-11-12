@@ -16,8 +16,24 @@
     <div class="wrap">
       <header class="app-header">
         <h1>🍽️ TakeHome Tally 🍽️</h1>
-        <p class="muted">This app gives you a simple way to keep track of your hours, tips and deductions. Predict your paycheck amount before you get paid and see what you actually take home each week. Keep your earnings organized with clear, easy-to-read summaries.
-        </p>
+        <div class="app-description">
+          <button type="button" class="app-description-toggle expanded" aria-expanded="true" aria-controls="app-description-content">
+            <span class="toggle-label">About This App</span>
+            <span class="toggle-hint muted">tap to hide</span>
+          </button>
+          <div id="app-description-content" class="app-description-content expanded">
+            <p class="muted">TakeHome Tally gives you a simple way to keep track of your hours, tips and deductions. Predict your paycheck amount before you get paid and see what you actually take home each week. Stay on top of your changing income with simple weekly insights.
+            </p>
+            <p class="muted">
+              Note: This app runs right in your web browser.<br>
+              You can bookmark this page to return anytime, or "install" 📲 it to your phone's home screen for a more app-like experience:
+            </p>
+            <ul class="muted">
+              <li><strong>iPhone:</strong> tap <em>Share → Add to Home Screen</em></li>
+              <li><strong>Android:</strong> tap the <em>menu (⋮)</em> and choose <em>Add to Home screen</em></li>
+            </ul>
+          </div>
+        </div>
         <!-- NAVIGATION BAR FOR MOBILE-FIRST LAYOUT -->
         <nav class="top-nav" aria-label="Primary pages">
           <button data-page="entry" aria-controls="page-entry">Daily Entry</button>
@@ -431,6 +447,33 @@
 
       const initialPage = document.querySelector(".page.active")?.id.replace("page-", "") || "entry";
       activatePage(initialPage);
+    </script>
+    <!--APP DESCRIPTION TOGGLE SCRIPT-->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const toggleButton = document.querySelector(".app-description-toggle");
+        const content = document.getElementById("app-description-content");
+        
+        if (toggleButton && content) {
+          toggleButton.addEventListener("click", () => {
+            const isExpanded = content.classList.contains("expanded");
+            
+            if (isExpanded) {
+              content.classList.remove("expanded");
+              toggleButton.classList.remove("expanded");
+              toggleButton.setAttribute("aria-expanded", "false");
+              const hint = toggleButton.querySelector(".toggle-hint");
+              if (hint) hint.textContent = "tap to expand";
+            } else {
+              content.classList.add("expanded");
+              toggleButton.classList.add("expanded");
+              toggleButton.setAttribute("aria-expanded", "true");
+              const hint = toggleButton.querySelector(".toggle-hint");
+              if (hint) hint.textContent = "tap to hide";
+            }
+          });
+        }
+      });
     </script>
   </body>
 </html>

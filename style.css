@@ -155,6 +155,90 @@ h2 {
   margin: 0;
 }
 
+/* App Description Expandable */
+.app-description {
+  margin-bottom: 16px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  overflow: hidden;
+}
+
+.app-description-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+  position: relative;
+}
+
+.app-description-toggle:hover {
+  background: var(--ghost-hover);
+}
+
+.app-description-toggle .toggle-label {
+  flex: 1;
+}
+
+.app-description-toggle .toggle-hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-right: 24px;
+}
+
+.app-description-toggle::after {
+  content: "▼";
+  font-size: 1.1em;
+  transition: transform 0.25s ease;
+  color: var(--text);
+  font-weight: 900;
+  opacity: 1;
+  display: inline-block;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+}
+
+.app-description-toggle.expanded::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.app-description-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  padding: 0 16px;
+}
+
+.app-description-content.expanded {
+  max-height: 500px;
+  padding: 16px;
+}
+
+.app-description-content p,
+.app-description-content ul {
+  margin: 12px 0;
+}
+
+.app-description-content p:first-child {
+  margin-top: 0;
+}
+
+.app-description-content ul {
+  padding-left: 20px;
+}
+
 @media (min-width: 768px) {
   .app-header {
     flex-direction: row;
