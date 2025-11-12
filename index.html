@@ -26,7 +26,7 @@
             </p>
             <p class="muted">
               Note: This app runs right in your web browser.<br>
-              You can bookmark this page to return anytime, or "install" 📲 it to your phone's home screen for a more app-like experience:
+              You can bookmark this page to return anytime, or "install 📲" it to your phone's home screen for a more app-like experience:
             </p>
             <ul class="muted">
               <li><strong>iPhone:</strong> tap <em>Share → Add to Home Screen</em></li>
@@ -44,8 +44,8 @@
       </header>
       <main class="page-stack">
         <section id="page-settings" class="page">
-          <!-- SETTINGS + ROLE MANAGER -->
-          <div class="grid two">
+          <!-- SETTINGS + ROLE MANAGER + BACKUP/RESTORE -->
+          <div class="grid settings-grid">
             <!-- SETTINGS -->
             <div class="card">
               <h2>⚙️ Settings</h2>
@@ -109,44 +109,46 @@
               </div>
               <div class="muted">Roles appear in the Daily Entry dropdown.</div>
             </div>
-          </div>
-          <div class="card center">
-            <h2>💾 Backup / Restore</h2>
-            <p class="muted">
-              Here is where you can back up your app data, or export your entries to a spreadsheet. You can also reset everything if you want to start fresh, and restore from a backup.
-            </p>
 
-            <div class="button-row">
-              <div class="button-with-help">
-                <button id="export-data" class="btn-ghost">Backup Data</button>
-                <button type="button" class="info-btn" data-help="Creates a JSON backup file containing your saved settings and entries. This file can be imported later to restore your data.">ⓘ</button>
-              </div>
-              <div class="button-with-help">
-                <button id="export-csv" class="btn-ghost">Export Data</button>
-                <button type="button" class="info-btn" data-help="Exports a CSV file of all your entries. This file can be opened in a spreadsheet app like Excel, Numbers, or Google Sheets.">ⓘ</button>
-              </div>
-            </div>
+            <!-- BACKUP / RESTORE -->
+            <div class="card center">
+              <h2>💾 Backup / Restore</h2>
+              <p class="muted">
+                Here is where you can back up your app data, or export your entries to a spreadsheet. You can also reset everything if you want to start fresh, and restore from a backup.
+              </p>
 
-            <div class="button-row">
-              <div class="button-with-help">
-                <label
-                  for="import-json"
-                  class="btn-ghost small"
-                  style="cursor: pointer"
-                  >🪄 Restore from Backup</label
-                >
-                <button type="button" class="info-btn" data-help="Restores a previously created JSON backup file. Existing data will be replaced.">ⓘ</button>
+              <div class="button-row">
+                <div class="button-with-help">
+                  <button id="export-data" class="btn-ghost">Backup Data</button>
+                  <button type="button" class="info-btn" data-help="Creates a JSON backup file containing your saved settings and entries. This file can be imported later to restore your data.">ⓘ</button>
+                </div>
+                <div class="button-with-help">
+                  <button id="export-csv" class="btn-ghost">Export Data</button>
+                  <button type="button" class="info-btn" data-help="Exports a CSV file of all your entries. This file can be opened in a spreadsheet app like Excel, Numbers, or Google Sheets.">ⓘ</button>
+                </div>
               </div>
-              <div class="button-with-help">
-                <button id="reset-data" class="btn-danger">Reset All Data</button>
-                <button type="button" class="info-btn" data-help="Deletes every entry and setting from this device. This action cannot be undone, so make sure you make a backup first if you want to keep your data.">ⓘ</button>
+
+              <div class="button-row">
+                <div class="button-with-help">
+                  <label
+                    for="import-json"
+                    class="btn-ghost small"
+                    style="cursor: pointer"
+                    >🪄 Restore from Backup</label
+                  >
+                  <button type="button" class="info-btn" data-help="Restores a previously created JSON backup file. Existing data will be replaced.">ⓘ</button>
+                </div>
+                <div class="button-with-help">
+                  <button id="reset-data" class="btn-danger">Reset All Data</button>
+                  <button type="button" class="info-btn" data-help="Deletes every entry and setting from this device. This action cannot be undone, so make sure you make a backup first if you want to keep your data.">ⓘ</button>
+                </div>
+                <input
+                  type="file"
+                  id="import-json"
+                  accept=".json,application/json"
+                  style="display: none"
+                />
               </div>
-              <input
-                type="file"
-                id="import-json"
-                accept=".json,application/json"
-                style="display: none"
-              />
             </div>
           </div>
         </section>
