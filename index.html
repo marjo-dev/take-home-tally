@@ -330,13 +330,46 @@
     <script src="script.js"></script>
     <script>
       if ("serviceWorker" in navigator) {
+        let refreshing = false;
+
+        // Register service worker
         window.addEventListener("load", () => {
           navigator.serviceWorker
             .register("./service-worker.js")
-            .then((reg) =>
-              console.log("✅ Service Worker registered", reg.scope)
-            )
+            .then((reg) => {
+              console.log("✅ Service Worker registered", reg.scope);
+
+              // Check for updates periodically (every hour)
+              setInterval(() => {
+                reg.update();
+              }, 60 * 60 * 1000);
+
+              // Listen for service worker updates
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                console.log('🔄 New service worker found, installing...');
+                
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New service worker is ready, reload to activate it
+                    console.log('✅ New version available! Reloading...');
+                    if (!refreshing) {
+                      refreshing = true;
+                      window.location.reload();
+                    }
+                  }
+                });
+              });
+            })
             .catch((err) => console.error("❌ Service Worker failed", err));
+        });
+
+        // Handle service worker controller change (when new one takes over)
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!refreshing) {
+            refreshing = true;
+            window.location.reload();
+          }
         });
       }
 
