@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return {
       taxRate: 20,
       k401Rate: 0,
+      roth401kRate: 0,
       employerMatch: 3,
       otherDeductions: 0,
       theme: "dark",
@@ -413,6 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderSettings() {
     document.getElementById("set-tax").value = settings.taxRate;
     document.getElementById("set-k401").value = settings.k401Rate;
+    document.getElementById("set-roth401k").value = settings.roth401kRate || 0;
     document.getElementById("set-match").value = settings.employerMatch;
     document.getElementById("set-other").value = settings.otherDeductions;
     const themeSelect = document.getElementById("set-theme");
@@ -433,6 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("save-settings").addEventListener("click", async () => {
     settings.taxRate = parseFloat(document.getElementById("set-tax").value) || 0;
     settings.k401Rate = parseFloat(document.getElementById("set-k401").value) || 0;
+    settings.roth401kRate = parseFloat(document.getElementById("set-roth401k").value) || 0;
     settings.employerMatch = parseFloat(document.getElementById("set-match").value) || 0;
     settings.otherDeductions = parseFloat(document.getElementById("set-other").value) || 0;
     settings.theme = document.getElementById("set-theme").value || "dark";
@@ -506,12 +509,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const gross = pay + ccTips; // taxable only
       const k401 = gross * (settings.k401Rate / 100);
-      const taxable = gross - k401;
+      const roth401k = gross * ((settings.roth401kRate || 0) / 100);
+      const taxable = gross - k401; // Roth 401k doesn't reduce taxable income
       const tax = taxable * (settings.taxRate / 100);
       const other = gross * (settings.otherDeductions / 100);
-      const net = gross - (tax + k401 + other);
+      const net = gross - (tax + k401 + roth401k + other);
       const match = gross * (settings.employerMatch / 100);
-      const retirement = k401 + match;
+      const retirement = k401 + roth401k + match;
 
       const takeHome = net + cashTips - tipOuts;
       const payDateISO = calcPayDate(wkEnd);

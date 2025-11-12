@@ -49,7 +49,24 @@
             <!-- SETTINGS -->
             <div class="card">
               <h2>⚙️ Settings</h2>
-              <p class="muted">Set up your tax rates, 401(k) contributions, employer match, and other deductions here. These settings will be used to calculate your take-home pay each week. These settings are saved locally in your app.</p>
+              <p class="muted">
+                Set your tax rates, retirement contributions, employer match, and any other deductions. 
+                These values are saved locally and used to estimate your weekly take-home pay.
+              </p>
+              <p class="muted">
+                Note: This app provides estimates only — it doesn’t calculate your exact taxes or retirement contributions. 
+                Your actual paycheck may differ based on your employer’s payroll system and specific withholdings.
+              </p>
+              <p class="muted">
+                By default, a 20% tax deduction is applied to taxable income — a reasonable starting point for most tipped workers.
+              </p>
+              <p class="muted">
+                If you don’t have a 401(k), Roth 401(k), or employer match, you can leave those at 0%. 
+                The same goes for any other optional deductions.
+              </p>
+              <p class="muted">
+                You can update these settings anytime to refresh your estimated take-home pay.
+              </p>
               <div class="entry-column">
                 <div class="label-group">
                   <label
@@ -61,6 +78,12 @@
                   <label
                     ><span>401(k) (% of gross)</span>
                     <input type="number" id="set-k401" step="0.1" inputmode="decimal" />
+                  </label>
+                </div>
+                <div class="label-group">
+                  <label
+                    ><span>Roth 401(k) (% of gross)</span>
+                    <input type="number" id="set-roth401k" step="0.1" inputmode="decimal" />
                   </label>
                 </div>
                 <div class="label-group">

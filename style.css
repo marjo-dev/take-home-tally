@@ -284,11 +284,11 @@ h2 {
 /* ---------- Cards ---------- */
 .card {
   background: var(--card-bg);
-  padding: 16px 18px;
+  padding: 1rem 1.5rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--card-border);
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
 }
 
 .card h2 {
@@ -554,10 +554,41 @@ label.button-label:hover {
   font-size: 0.9rem;
 }
 
+/* Settings card: remove gap to prevent overflow */
+#page-settings .entry-column label {
+  gap: 0;
+}
+
 /* Label text span gets a fixed width, input takes remaining space */
 .entry-column label > span:first-child {
   min-width: 140px;
   flex-shrink: 0;
+}
+
+/* Settings card: labels 60%, inputs 40% */
+#page-settings .entry-column label {
+  min-width: 0;
+  overflow: hidden;
+  gap: 0;
+}
+
+#page-settings .entry-column label > span:first-child {
+  flex: 0 0 60%;
+  min-width: 0;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 2%;
+  box-sizing: border-box;
+}
+
+#page-settings .entry-column input[type="number"],
+#page-settings .entry-column input[type="text"],
+#page-settings .entry-column select {
+  flex: 0 0 40%;
+  min-width: 0;
+  max-width: 40%;
+  box-sizing: border-box;
 }
 
 /* Label group container for labels with helper text */
