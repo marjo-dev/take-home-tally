@@ -16,7 +16,7 @@
     <div class="wrap">
       <header class="app-header">
         <h1>🍽️ TakeHome Tally 🍽️</h1>
-        <p class="muted">A simple way to keep track of your hours, tips, and deductions. See what you actually take home each week and keep your earnings organized with clear, easy-to-read summaries.
+        <p class="muted">This app gives you a simple way to keep track of your hours, tips and deductions. Predict your paycheck amount before you get paid and see what you actually take home each week. Keep your earnings organized with clear, easy-to-read summaries.
         </p>
         <!-- NAVIGATION BAR FOR MOBILE-FIRST LAYOUT -->
         <nav class="top-nav" aria-label="Primary pages">
@@ -57,7 +57,7 @@
                 </select>
               </label>
               <button id="save-settings">Save Settings</button>
-              <span class="muted">Saved locally in your browser.</span>
+              <span class="muted">These settings are saved locally in your app.</span>
             </div>
 
             <!-- ROLE MANAGER -->
@@ -97,18 +97,17 @@
           <div class="card center">
             <h2>💾 Backup / Restore</h2>
             <p class="muted">
-              Export or back up your data, reset everything, or import saved
-              entries.
+              Here is where you can back up your app data, or export your entries to a spreadsheet. You can also reset everything if you want to start fresh, and restore from a backup.
             </p>
 
             <div class="button-row">
               <div class="button-with-help">
                 <button id="export-data" class="btn-ghost">Backup Data</button>
-                <button type="button" class="info-btn" data-help="Creates a JSON backup file containing your saved settings and entries.">ⓘ</button>
+                <button type="button" class="info-btn" data-help="Creates a JSON backup file containing your saved settings and entries. This file can be imported later to restore your data.">ⓘ</button>
               </div>
               <div class="button-with-help">
                 <button id="export-csv" class="btn-ghost">Export Data</button>
-                <button type="button" class="info-btn" data-help="Exports a CSV spreadsheet of all entries for spreadsheets or further analysis.">ⓘ</button>
+                <button type="button" class="info-btn" data-help="Exports a CSV file of all your entries. This file can be opened in a spreadsheet app like Excel, Numbers, or Google Sheets.">ⓘ</button>
               </div>
             </div>
 
@@ -120,11 +119,11 @@
                   style="cursor: pointer"
                   >🪄 Restore from Backup</label
                 >
-                <button type="button" class="info-btn" data-help="Restores a JSON backup created from this app. Existing data will be replaced.">ⓘ</button>
+                <button type="button" class="info-btn" data-help="Restores a previously created JSON backup file. Existing data will be replaced.">ⓘ</button>
               </div>
               <div class="button-with-help">
                 <button id="reset-data" class="btn-danger">Reset All Data</button>
-                <button type="button" class="info-btn" data-help="Deletes every entry and setting from this device. This action cannot be undone without a backup.">ⓘ</button>
+                <button type="button" class="info-btn" data-help="Deletes every entry and setting from this device. This action cannot be undone, so make sure you make a backup first if you want to keep your data.">ⓘ</button>
               </div>
               <input
                 type="file"
@@ -133,10 +132,6 @@
                 style="display: none"
               />
             </div>
-
-            <p class="muted" style="margin-top: 10px">
-              ⚠️ Reset permanently deletes all entries, roles, and settings.
-            </p>
           </div>
         </section>
         <section id="page-entry" class="page active">
@@ -145,65 +140,83 @@
             <h2>🗓️ Daily Entry</h2>
 
             <form id="daily-entry-form" class="entry-column">
-              <label
-                >Date
-                <div class="date-input-wrap">
-                  <input type="date" id="entry-date" required autofocus />
-                  <button id="today-btn" type="button" class="btn-ghost small">
-                    Today
-                  </button>
-                </div>
-              </label>
+              <div class="label-group">
+                <label
+                  ><span>Date</span>
+                  <div class="date-input-wrap">
+                    <input type="date" id="entry-date" required autofocus />
+                    <button id="today-btn" type="button" class="btn-ghost small">
+                      Today
+                    </button>
+                  </div>
+                </label>
+                <span class="muted helper-text">Select the date from the calendar or tap the Today button to set current date</span>
+              </div>
 
-              <label
-                >Role
-                <select id="entry-role"></select>
-              </label>
+              <div class="label-group">
+                <label
+                  ><span>Role</span>
+                  <select id="entry-role"></select>
+                </label>
+                <span class="muted helper-text">Select role from the dropdown menu</span>
+              </div>
 
-              <label
-                >Hours Worked
-                <input
-                  type="number"
-                  id="entry-hours"
-                  step="0.1"
-                  placeholder="e.g. 6.5"
-                  required
-                  inputmode="decimal"
-                />
-              </label>
+              <div class="label-group">
+                <label
+                  ><span>Hours Worked</span>
+                  <input
+                    type="number"
+                    id="entry-hours"
+                    step="0.1"
+                    placeholder="Hours worked in shift"
+                    required
+                    inputmode="decimal"
+                  />
+                </label>
+                <span class="muted helper-text">Write in the exact number on your time card after clocking out</span>
+              </div>
 
-              <label
-                >Credit Card Tips Earned ($)
-                <input
-                  type="number"
-                  id="entry-tips"
-                  step="0.01"
-                  placeholder="Credit tips"
-                  inputmode="decimal"
-                />
-              </label>
+              <div class="label-group">
+                <label
+                  ><span>Credit Card Tips ($)</span>
+                  <input
+                    type="number"
+                    id="entry-tips"
+                    step="0.01"
+                    placeholder="Credit card tips earned"
+                    inputmode="decimal"
+                  />
+                </label>
+                <span class="muted helper-text">Write in the exact amount found in your shift report</span>
+              </div>
 
-              <label
-                >Cash Tips Earned ($)
-                <input
-                  type="number"
-                  id="entry-cash"
-                  step="0.01"
-                  placeholder="Cash tips"
-                  inputmode="decimal"
-                />
-              </label>
+              <div class="label-group">
+                <label
+                  ><span>Cash Tips ($)</span>
+                  <input
+                    type="number"
+                    id="entry-cash"
+                    step="0.01"
+                    placeholder="Cash tips earned"
+                    inputmode="decimal"
+                  />
+                </label>
+                <span class="muted helper-text">Write in the amount you earned before tipping out co-workers</span>
+              </div>
 
-              <label
-                >Tip-Outs ($)
-                <input
-                  type="number"
-                  id="entry-tipouts"
-                  step="0.01"
-                  placeholder="Tip-outs given"
-                  inputmode="decimal"
-                />
-              </label>
+              <div class="label-group">
+                <label
+                  ><span>Tip-Outs ($)</span>
+                  <input
+                    type="number"
+                    id="entry-tipouts"
+                    step="0.01"
+                    placeholder="Tip-outs given"
+                    inputmode="decimal"
+                  />
+                </label>
+                <span class="muted helper-text">Write in the total amount you tipped out for this shift</span>
+              </div>
 
               <div class="entry-footer">
                 <button id="add-entry" type="button">Add Daily Entry</button>
@@ -223,8 +236,7 @@
               </select>
             </div>
 
-            <h3 class="section-header">Weekly Breakdown</h3>
-            <p class="section-subtext">Detailed week-by-week totals based on the selected month filter.</p>
+            <p class="section-subtext">Detailed week-by-week totals. You can filter by month to see breakdowns for a specific month. Tap the Pay Period header to expand the details for that week.</p>
 
             <div class="table-wrap">
               <table id="weekly-table">

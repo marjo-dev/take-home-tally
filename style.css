@@ -351,28 +351,56 @@ button:hover {
 
 .entry-column label {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+/* Label text span gets a fixed width, input takes remaining space */
+.entry-column label > span:first-child {
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+/* Label group container for labels with helper text */
+.entry-column .label-group {
+  display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.9rem;
+}
+
+/* Helper text appears below the label+input row */
+.entry-column .label-group .helper-text,
+.entry-column .helper-text {
+  margin-left: 0;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  padding-top: 2px;
 }
 
 .date-input-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .entry-column input[type="number"],
 .entry-column input[type="date"],
 .entry-column select {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   max-width: none;
 }
 
 /* Optional form-style subtle separators */
-.entry-column label:not(:last-child) {
+.entry-column > label:not(:last-of-type),
+.entry-column > .label-group:not(:last-of-type) {
   border-bottom: 1px dashed var(--card-border);
   padding-bottom: 6px;
+  margin-bottom: 6px;
 }
 
 /* =====================================================
@@ -402,11 +430,12 @@ table {
   padding: 0;
   margin: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   cursor: pointer;
   text-align: left;
+  position: relative;
 }
 
 #weekly-table .week-meta {
@@ -414,6 +443,7 @@ table {
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  flex: 1;
 }
 
 #weekly-table .week-toggle .week-label {
@@ -427,13 +457,25 @@ table {
 
 #weekly-table .week-toggle strong {
   font-weight: 600;
+  font-size: 0.75rem;
+  display: block;
+  padding-right: 1ch;
+  position: relative;
 }
 
 #weekly-table .week-toggle::after {
-  content: "▾";
-  font-size: 0.85em;
+  content: "▼";
+  font-size: 1.1em;
   transition: transform 0.25s ease;
-  margin-left: auto;
+  color: var(--text);
+  font-weight: 900;
+  opacity: 1;
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: calc(0.7rem + 4px);
+  transform: none;
+  line-height: 1;
 }
 
 #weekly-table tr.mobile-summary-open .week-toggle::after,

@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ---------- Daily Entry ----------
-  document.getElementById("entry-date").value = toISO(new Date());
+  // Date input starts empty - user must select a date or click "Today" button
   document.getElementById("add-entry").addEventListener("click", async () => {
     const date = document.getElementById("entry-date").value;
     const role = document.getElementById("entry-role").value;
@@ -569,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tr.setAttribute("data-week-key", wk.key);
         const detailsId = `details-${wk.key}`;
         tr.innerHTML = `
-      <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)}–${fmtDate(wk.weekEnd)}</strong></span></button></td>
+      <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)} &ndash; ${fmtDate(wk.weekEnd)}</strong></span></button></td>
       <td class="num" data-label="Hours Worked">${t.hours.toFixed(2)} h</td>
       <td class="num mobile-extra" data-label="Hourly Wages">${fmtMoney(t.hourlyPay)}</td>
       <td class="num mobile-extra" data-label="Total Credit Card Tips">${fmtMoney(t.tips)}</td>
@@ -585,8 +585,8 @@ document.addEventListener("DOMContentLoaded", () => {
       <td class="num mobile-extra" data-label="Employer Match">${fmtMoney(t.match)}</td>
       <td class="mobile-actions" data-label="">
         <div class="action-stack">
-          <button class="btn-ghost" data-toggle="${wk.key}" aria-expanded="false" aria-controls="${detailsId}">Daily Breakdown</button>
-          <p class="mobile-hint">Tap the row to reveal more metrics. Delete options appear inside the daily breakdown.</p>
+          <button class="btn-ghost" data-toggle="${wk.key}" aria-expanded="false" aria-controls="${detailsId}">Details</button>
+          <p class="mobile-hint">Tap the Details button to reveal breakdown by day. Scroll horizontally to see more info. Delete option appears at the end of the row.</p>
         </div>
       </td>`;
         tbody.appendChild(tr);
@@ -620,14 +620,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---------- Toggle + Delete ----------
   document.addEventListener("click", e => {
-    const summaryKey = e.target?.getAttribute("data-summary");
+    const button = e.target.closest(".week-toggle");
+    const summaryKey = button?.getAttribute("data-summary");
     if (summaryKey) {
-      const row = e.target.closest("tr");
+      const row = button.closest("tr");
       if (!row) return;
       const open = row.classList.toggle("mobile-summary-open");
-      if (e.target instanceof HTMLElement) {
-        e.target.setAttribute("aria-expanded", open ? "true" : "false");
-        e.target.classList.toggle("expanded", open);
+      if (button instanceof HTMLElement) {
+        button.setAttribute("aria-expanded", open ? "true" : "false");
+        button.classList.toggle("expanded", open);
       }
       return;
     }
@@ -644,14 +645,14 @@ document.addEventListener("DOMContentLoaded", () => {
         details.classList.remove("details-expanded");
         details.hidden = true;
         if (e.target instanceof HTMLElement) {
-          e.target.textContent = "Daily Breakdown";
+          e.target.textContent = "Details";
           e.target.setAttribute("aria-expanded", "false");
         }
       } else {
         details.hidden = false;
         details.classList.add("details-expanded");
         if (e.target instanceof HTMLElement) {
-          e.target.textContent = "Hide Daily Breakdown";
+          e.target.textContent = "Hide Details";
           e.target.setAttribute("aria-expanded", "true");
         }
       }
