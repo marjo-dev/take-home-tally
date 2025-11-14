@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <td>${name}</td>
       <td class="num">${fmtMoney(rate)}</td>
       <td>
-        <button class="btn-ghost" data-edit-role="${name}" data-edit-rate="${rate}">Edit</button>
+        <button data-edit-role="${name}" data-edit-rate="${rate}">Edit</button>
         <button class="btn-danger" data-role="${name}">Delete</button>
       </td>`;
       tbody.appendChild(tr);
