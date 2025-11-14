@@ -28,6 +28,20 @@
   --table-header-bg: #202937;
   --table-header-text: #e2e8f0;
   --table-row-alt: #252525;
+
+  /* Category-based accent colors */
+  --color-hours: #6e7382;
+  --color-paydate: #93c5fd;
+  --color-gross: #c9a86c;
+  --color-taxable: #b8965a;
+  --color-cc-tips: #6ba7a5;
+  --color-cash-tips: #7eb1ad;
+  --color-tax: #b46a62;
+  --color-tipouts: #c27a72;
+  --color-net: #7fa27a;
+  --color-takehome: #a5c4a1;
+  --color-retirement: #6d8fa7;
+  --color-match: #7a9bb5;
 }
 
 body.theme-light {
@@ -56,6 +70,20 @@ body.theme-light {
   --table-header-bg: #e2e8f0;
   --table-header-text: #0f172a;
   --table-row-alt: #f1f5f9;
+
+  /* Category-based accent colors */
+  --color-hours: #6e7382;
+  --color-paydate: #2563eb;
+  --color-gross: #c9a86c;
+  --color-taxable: #b8965a;
+  --color-cc-tips: #6ba7a5;
+  --color-cash-tips: #7eb1ad;
+  --color-tax: #b46a62;
+  --color-tipouts: #c27a72;
+  --color-net: #7fa27a;
+  --color-takehome: #a5c4a1;
+  --color-retirement: #6d8fa7;
+  --color-match: #7a9bb5;
 }
 
 /* Navigation bar style for mobile layout - now at bottom as footer */
@@ -78,7 +106,7 @@ body.theme-light {
   pointer-events: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .top-nav {
     padding: 10px 24px;
   }
@@ -100,6 +128,7 @@ body.theme-light {
   pointer-events: auto;
   z-index: 1001;
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
 }
 
 .top-nav button.is-active {
@@ -109,7 +138,7 @@ body.theme-light {
   border-left: 1px solid var(--card-border-strong);
   border-right: 1px solid var(--card-border-strong);
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.2),
-    0 2px 8px rgba(59, 130, 246, 0.3);
+    0 2px 8px color-mix(in srgb, var(--button-bg) 30%, transparent);
 }
 
 .top-nav button.is-active::after {
@@ -125,7 +154,7 @@ body.theme-light {
 }
 
 .top-nav button:hover:not(.is-active) {
-  color: #4ade80;
+  color: var(--color-net);
   background: var(--ghost-hover);
 }
 
@@ -152,7 +181,7 @@ b {
   font-weight: 600;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   body {
     padding: 24px 24px 84px 24px;
   }
@@ -166,9 +195,22 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-  flex-wrap: wrap;
+  gap: 1rem;
+  flex-wrap: nowrap;
   width: 100%;
+}
+
+.h1-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.h1-title-group img {
+  flex-shrink: 0;
 }
 
 h2 {
@@ -388,7 +430,7 @@ body.theme-light .settings-description {
   border: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .app-header {
     flex-direction: column;
     align-items: stretch;
@@ -436,7 +478,7 @@ body.theme-light .settings-description {
   gap: 12px;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 600px) {
   .grid.two {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -449,7 +491,7 @@ body.theme-light .settings-description {
   gap: 12px;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 900px) {
   .grid.settings-grid {
     grid-template-columns: repeat(3, minmax(280px, 400px));
     justify-content: center;
@@ -483,7 +525,7 @@ button {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #60a5fa;
+  border-color: var(--button-bg);
 }
 
 select option:disabled {
@@ -496,7 +538,7 @@ button {
   background: var(--button-bg);
   border: none;
   border-radius: 6px;
-  color: #fff;
+  color: #ffffff;
   padding: 8px 12px;
   transition: background 0.2s;
 }
@@ -512,7 +554,7 @@ label.button-label {
   background: var(--button-bg);
   border: none;
   border-radius: 6px;
-  color: #fff;
+  color: #ffffff;
   padding: 8px 12px;
   transition: background 0.2s;
   font: inherit;
@@ -536,7 +578,7 @@ label.button-label:hover {
 .btn-danger {
   background: var(--danger-bg);
   border: none;
-  color: #fff;
+  color: #ffffff;
 }
 
 .btn-danger:hover {
@@ -589,8 +631,8 @@ label.button-label:hover {
 }
 .info-btn:hover,
 .info-btn:focus-visible {
-  background: rgba(147, 197, 253, 0.18);
-  color: #fff;
+  background: color-mix(in srgb, var(--color-paydate) 18%, transparent);
+  color: #ffffff;
 }
 /* Modal styles */
 .modal-overlay {
@@ -601,7 +643,7 @@ label.button-label:hover {
   bottom: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(0, 0, 0, 0.6);
+  background: color-mix(in srgb, #000000 60%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -648,7 +690,7 @@ label.button-label:hover {
   margin: 0 24px 24px 24px;
   padding: 10px 20px;
   background: var(--button-bg);
-  color: #fff;
+  color: #ffffff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -667,7 +709,7 @@ label.button-label:hover {
 
 /* User Tips - Prominent styling for important information */
 .user-tips {
-  background: rgba(59, 130, 246, 0.15);
+  background: color-mix(in srgb, var(--button-bg) 15%, transparent);
   border-left: 4px solid var(--button-bg);
   border-radius: 6px;
   padding: 14px 16px;
@@ -675,7 +717,7 @@ label.button-label:hover {
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--text);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--button-bg) 10%, transparent);
   position: relative;
 }
 
@@ -693,9 +735,9 @@ label.button-label:hover {
 
 /* Light theme adjustments */
 body.theme-light .user-tips {
-  background: rgba(37, 99, 235, 0.1);
+  background: color-mix(in srgb, var(--button-bg) 10%, transparent);
   border-left-color: var(--button-bg);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--button-bg) 8%, transparent);
 }
 
 /* User tips list styling */
@@ -1087,7 +1129,7 @@ th.num {
 }
 
 /* Card header - Pay Period */
-#weekly-table tbody tr[data-week-key] td[data-label="Pay Period"] {
+#weekly-table tbody tr[data-week-key] td.week-cell {
   background: linear-gradient(
     135deg,
     var(--card-border) 0%,
@@ -1098,11 +1140,7 @@ th.num {
   margin: 0;
 }
 
-#weekly-table tbody tr[data-week-key] td[data-label="Pay Period"]::before {
-  display: none;
-}
-
-#weekly-table tbody tr[data-week-key] td[data-label="Pay Period"] strong {
+#weekly-table tbody tr[data-week-key] td.week-cell strong {
   font-size: 1.1rem;
   color: var(--text);
   font-weight: 600;
@@ -1110,10 +1148,7 @@ th.num {
 }
 
 /* Card body - Stacked metrics */
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td:not([data-label="Pay Period"]):not(.mobile-actions) {
+#weekly-table tbody tr[data-week-key] td:not(.week-cell):not(.mobile-actions) {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1126,51 +1161,28 @@ th.num {
 #weekly-table
   tbody
   tr[data-week-key]
-  td:not([data-label="Pay Period"]):not(.mobile-actions):last-of-type {
+  td:not(.week-cell):not(.mobile-actions):last-of-type {
   border-bottom: none;
 }
 
-/* Label styling */
-#weekly-table tbody tr[data-week-key] td::before {
-  content: attr(data-label);
+/* Label and value styling */
+#weekly-table tbody tr[data-week-key] td .metric-label {
   font-weight: 500;
   color: var(--muted);
   font-size: 0.9rem;
   margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* Special handling for Net Income with sublabel - mobile card */
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Net Income"][data-sublabel] {
-  display: block !important;
-  position: relative;
-  padding-right: 80px;
-  min-height: 44px;
-  text-align: left;
+#weekly-table tbody tr[data-week-key] td .metric-value {
+  text-align: right;
+  font-weight: 500;
 }
 
-/* Main label "Net Income" - first line */
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Net Income"][data-sublabel]::before {
-  content: attr(data-label);
-  display: block;
-  margin-bottom: 2px;
-  width: 100%;
-  text-align: left;
-}
-
-/* Sublabel "(Estimated Paycheck Amount)" - second line */
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Net Income"][data-sublabel]::after {
-  content: attr(data-sublabel);
+#weekly-table tbody tr[data-week-key] td .metric-sublabel {
   font-size: 0.8em;
-  color: #4ade80;
   font-weight: 400;
   opacity: 0.85;
   display: block;
@@ -1180,12 +1192,49 @@ th.num {
   text-align: left;
 }
 
+/* Info button styling within metric labels */
+#weekly-table tbody tr[data-week-key] td .metric-label .info-btn {
+  background: none;
+  border: none;
+  color: var(--paydate-color);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+#weekly-table tbody tr[data-week-key] td .metric-label .info-btn:hover,
+#weekly-table tbody tr[data-week-key] td .metric-label .info-btn:focus-visible {
+  background: color-mix(in srgb, var(--color-paydate) 18%, transparent);
+  color: #ffffff;
+}
+
+/* Special handling for Net Income with sublabel - mobile card */
+#weekly-table tbody tr[data-week-key] td.metric-net {
+  display: block !important;
+  position: relative;
+  padding-right: 80px;
+  min-height: 44px;
+  text-align: left;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-net .metric-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+  width: 100%;
+  text-align: left;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-net .metric-sublabel {
+  color: var(--color-net);
+}
+
 /* Value aligned to the right, positioned absolutely */
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Net Income"][data-sublabel]
-  strong {
+#weekly-table tbody tr[data-week-key] td.metric-net .metric-value {
   position: absolute;
   right: 16px;
   top: 50%;
@@ -1238,102 +1287,271 @@ th.num {
   line-height: 1.3;
 }
 
-/* Key metrics - Highlighted sections */
-#weekly-table tbody tr[data-week-key] td[data-label="Total Take-Home Amount"] {
-  background: rgba(45, 212, 191, 0.12);
-  border-left: 3px solid #2dd4bf;
-  padding-left: 13px;
-  font-size: 1.05rem;
-  margin-top: 4px;
+/* Category-based color system with 4px left borders and visual grouping */
+
+/* Summary Section (always visible in collapsed view) */
+/* Hours Worked */
+#weekly-table tbody tr[data-week-key] td.metric-hours {
+  border-left: 4px solid var(--color-hours);
+  padding-left: 16px;
+  font-weight: 600;
+  display: flex !important;
+  justify-content: space-between;
+  color: var(--color-hours);
 }
 
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Total Take-Home Amount"]::before {
-  color: #2dd4bf;
+#weekly-table tbody tr[data-week-key] td.metric-hours .metric-label {
+  color: var(--color-hours);
   font-weight: 600;
 }
 
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Total Take-Home Amount"]
-  strong {
-  color: #2dd4bf;
-  font-size: 1.1rem;
-}
-
-#weekly-table tbody tr[data-week-key] td[data-label="Gross Income"] {
-  background: rgba(251, 191, 36, 0.12);
-  border-left: 3px solid #fbbf24;
-  padding-left: 13px;
-}
-
-#weekly-table tbody tr[data-week-key] td[data-label="Gross Income"]::before {
-  color: #fbbf24;
+#weekly-table tbody tr[data-week-key] td.metric-hours .metric-value {
+  color: var(--color-hours);
   font-weight: 600;
 }
 
-#weekly-table tbody tr[data-week-key] td[data-label="Gross Income"] strong {
-  color: #fbbf24;
-}
-
-/* Net Income (Estimated Paycheck Amount) - Highlighted - Mobile */
-#weekly-table tbody tr[data-week-key] td[data-label="Net Income"] {
-  background: rgba(74, 222, 128, 0.12);
-  border-left: 3px solid #4ade80;
-  padding-left: 13px;
+/* Pay Date */
+#weekly-table tbody tr[data-week-key] td.metric-paydate {
+  border-left: 4px solid var(--color-paydate);
+  padding-left: 16px;
+  color: var(--color-paydate);
   font-weight: 500;
 }
 
-/* Override default label styling for Net Income - ensure it shows as block */
-#weekly-table
-  tbody
-  tr[data-week-key]
-  td[data-label="Net Income"][data-sublabel]::before {
-  color: #4ade80 !important;
+#weekly-table tbody tr[data-week-key] td.metric-paydate .metric-label {
+  color: var(--color-paydate);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-paydate .metric-value {
+  color: var(--color-paydate);
+  font-weight: 500;
+}
+
+/* Earnings Section */
+/* Hourly Wages */
+#weekly-table tbody tr[data-week-key] td.metric-hourly-wages {
+  border-left: 4px solid var(--color-gross);
+  padding-left: 16px;
+  color: var(--color-gross);
+  margin-top: 12px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 16px;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-hourly-wages .metric-label {
+  color: var(--color-gross);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-hourly-wages .metric-value {
+  color: var(--color-gross);
+  font-weight: 500;
+}
+
+/* Gross Income */
+#weekly-table tbody tr[data-week-key] td.metric-gross {
+  border-left: 4px solid var(--color-gross);
+  padding-left: 16px;
+  background: color-mix(in srgb, var(--color-gross) 8%, transparent);
+  color: var(--color-gross);
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-gross .metric-label {
+  color: var(--color-gross);
   font-weight: 600;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-gross .metric-value {
+  color: var(--color-gross);
+  font-weight: 600;
+}
+
+/* Taxable Income */
+#weekly-table tbody tr[data-week-key] td.metric-taxable {
+  border-left: 4px solid var(--color-taxable);
+  padding-left: 16px;
+  color: var(--color-taxable);
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-taxable .metric-label {
+  color: var(--color-taxable);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-taxable .metric-value {
+  color: var(--color-taxable);
+  font-weight: 500;
+}
+
+/* Tips Section */
+/* Credit Card Tips */
+#weekly-table tbody tr[data-week-key] td.metric-cc-tips {
+  border-left: 4px solid var(--color-cc-tips);
+  padding-left: 16px;
+  color: var(--color-cc-tips);
+  font-weight: 500;
+  margin-top: 12px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 16px;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-cc-tips .metric-label {
+  color: var(--color-cc-tips);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-cc-tips .metric-value {
+  color: var(--color-cc-tips);
+  font-weight: 500;
+}
+
+/* Cash Tips */
+#weekly-table tbody tr[data-week-key] td.metric-cash-tips {
+  border-left: 4px solid var(--color-cash-tips);
+  padding-left: 16px;
+  color: var(--color-cash-tips);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-cash-tips .metric-label {
+  color: var(--color-cash-tips);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-cash-tips .metric-value {
+  color: var(--color-cash-tips);
+  font-weight: 500;
+}
+
+/* Deductions Section */
+/* Tax Deduction */
+#weekly-table tbody tr[data-week-key] td.metric-tax {
+  border-left: 4px solid var(--color-tax);
+  padding-left: 16px;
+  color: var(--color-tax);
+  margin-top: 12px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 16px;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-tax .metric-label {
+  color: var(--color-tax);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-tax .metric-value {
+  color: var(--color-tax);
+  font-weight: 500;
+}
+
+/* Tip-Outs */
+#weekly-table tbody tr[data-week-key] td.metric-tipouts {
+  border-left: 4px solid var(--color-tipouts);
+  padding-left: 16px;
+  color: var(--color-tipouts);
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-tipouts .metric-label {
+  color: var(--color-tipouts);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-tipouts .metric-value {
+  color: var(--color-tipouts);
+  font-weight: 500;
+}
+
+/* Retirement Section */
+/* Retirement Contribution */
+#weekly-table tbody tr[data-week-key] td.metric-retirement {
+  border-left: 4px solid var(--color-retirement);
+  padding-left: 16px;
+  color: var(--color-retirement);
+  margin-top: 12px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 16px;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-retirement .metric-label {
+  color: var(--color-retirement);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-retirement .metric-value {
+  color: var(--color-retirement);
+  font-weight: 500;
+}
+
+/* Employer Match */
+#weekly-table tbody tr[data-week-key] td.metric-match {
+  border-left: 4px solid var(--color-match);
+  padding-left: 16px;
+  color: var(--color-match);
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-match .metric-label {
+  color: var(--color-match);
+  font-weight: 500;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-match .metric-value {
+  color: var(--color-match);
+  font-weight: 500;
+}
+
+/* Key Metrics Section (emphasized) */
+/* Net Income - emphasized */
+#weekly-table tbody tr[data-week-key] td.metric-net {
+  border-left: 4px solid var(--color-net);
+  padding-left: 16px;
+  background: color-mix(in srgb, var(--color-net) 12%, transparent);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  border-top: 2px solid var(--card-border);
+  padding-top: 18px;
+}
+
+#weekly-table tbody tr[data-week-key] td.metric-net .metric-label {
+  color: var(--color-net) !important;
+  font-weight: 700;
+  font-size: 1rem;
   margin-right: auto;
   width: auto;
 }
 
-#weekly-table tbody tr[data-week-key] td[data-label="Net Income"] strong {
-  color: #4ade80;
-  font-size: 1.05rem;
+#weekly-table tbody tr[data-week-key] td.metric-net .metric-value strong {
+  color: var(--color-net);
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
-/* Pay date styling */
-#weekly-table tbody tr[data-week-key] td[data-label="Pay Date"] {
-  color: var(--paydate-color);
-  font-weight: 500;
-}
-
-#weekly-table tbody tr[data-week-key] td[data-label="Pay Date"]::before {
-  color: var(--paydate-color);
-}
-
-/* Hours styling */
-#weekly-table tbody tr[data-week-key] td[data-label="Hours Worked"] {
+/* Total Take-Home Amount - emphasized */
+#weekly-table tbody tr[data-week-key] td.metric-takehome {
+  border-left: 4px solid var(--color-takehome);
+  padding-left: 16px;
+  background: color-mix(in srgb, var(--color-takehome) 12%, transparent);
+  font-size: 1.1rem;
   font-weight: 600;
-  display: flex !important;
-  justify-content: space-between;
+  margin-top: 8px;
+  margin-bottom: 4px;
 }
 
-/* Cash Tips styling - subtle highlight */
-#weekly-table tbody tr[data-week-key] td[data-label="Total Cash Tips"] {
-  color: var(--cash-highlight, #c084fc);
-  font-weight: 500;
+#weekly-table tbody tr[data-week-key] td.metric-takehome .metric-label {
+  color: var(--color-takehome);
+  font-weight: 700;
+  font-size: 1rem;
 }
 
-#weekly-table tbody tr[data-week-key] td[data-label="Total Cash Tips"]::before {
-  color: var(--cash-highlight, #c084fc);
+#weekly-table tbody tr[data-week-key] td.metric-takehome .metric-value strong {
+  color: var(--color-takehome);
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 
-/* Credit Tips styling - subtle highlight */
-#weekly-table tbody tr[data-week-key] td[data-label="Total Credit Card Tips"] {
-  font-weight: 500;
-}
+/* Visual section separators are now integrated into individual metric styles above */
 
 /* Details button - Card footer */
 #weekly-table tbody tr[data-week-key] td.mobile-actions {
@@ -1505,149 +1723,21 @@ th.num {
   display: none;
 }
 
-/* Desktop table layout */
-@media (min-width: 769px) {
-  #weekly-table {
-    display: table;
-  }
-
-  #weekly-table thead {
-    display: table-header-group;
-  }
-
-  #weekly-table tbody {
-    display: table-row-group;
-  }
-
-  #weekly-table tr {
-    display: table-row;
-  }
-
-  #weekly-table th,
-  #weekly-table td {
-    display: table-cell;
-    padding: 6px 8px;
-  }
-
-  .summary-card .table-wrap {
-    overflow-x: auto;
-  }
-
-  #weekly-table tbody tr[data-week-key] {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    margin-bottom: 0;
-    padding: 0;
-    box-shadow: none;
-  }
-
-  #weekly-table tbody tr[data-week-key] td {
-    text-align: inherit;
-  }
-
-  #weekly-table tbody tr[data-week-key] td::before,
-  #weekly-table tbody tr[data-week-key] td::after {
-    content: none !important;
-  }
-
-  #weekly-table
-    tbody
-    tr[data-week-key]
-    td[data-label="Net Income"][data-sublabel] {
-    display: table-cell !important;
-    position: static;
-    padding-right: 6px;
-    min-height: auto;
-    text-align: right;
-  }
-
-  #weekly-table
-    tbody
-    tr[data-week-key]
-    td[data-label="Net Income"][data-sublabel]
-    strong {
-    position: static;
-    transform: none;
-  }
-
-  #weekly-table tbody tr[data-week-key] td[data-label="Net Income"],
-  #weekly-table tbody tr[data-week-key] td[data-label="Total Take-Home Amount"],
-  #weekly-table tbody tr[data-week-key] td[data-label="Gross Income"],
-  #weekly-table tbody tr[data-week-key] td[data-label="Pay Date"] {
-    background: transparent;
-    border-left: none;
-    padding-left: 8px;
-    font-weight: 400;
-  }
-
-  #weekly-table tbody tr[data-week-key] td[data-label="Hours Worked"] {
-    display: table-cell !important;
-    justify-content: flex-end;
-  }
-
+/* Tablet and Desktop - Enhanced Card Layout */
+/* At 600px: Show all metrics, wider cards */
+@media (min-width: 600px) {
+  /* Show all metrics on tablet and up */
   #weekly-table tbody tr[data-week-key] td.mobile-extra {
-    display: table-cell !important;
+    display: flex !important;
   }
 
-  #weekly-table tbody tr[data-week-key] td.mobile-actions {
-    display: table-cell;
-    padding: 6px 8px;
-    border-top: none;
-    background: transparent;
-  }
-
-  #weekly-table tbody tr[data-week-key] td.mobile-actions button {
-    width: auto;
-    max-width: none;
-  }
-
-  /* Hide details rows by default on desktop */
-  #weekly-table tbody tr.week-details:not(.details-expanded) {
-    display: none !important;
-  }
-
-  #weekly-table tbody tr.week-details.details-expanded {
-    display: table-row !important;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    margin: 0;
-    padding: 0;
-    border-top: none;
-  }
-
-  #weekly-table tbody tr.week-details.details-expanded td {
-    display: table-cell;
-    padding: 8px 6px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-  }
-
-  #weekly-table tbody tr.week-details.details-expanded td::before {
+  /* Hide mobile hint text */
+  #weekly-table tbody td.mobile-actions .mobile-hint {
     display: none;
   }
 
-  #weekly-table tbody tr:not([data-week-key]) {
-    display: table-row;
-    background: transparent;
-    border: none;
-    padding: 0;
-    text-align: center;
-    margin-bottom: 0;
-  }
-
-  #weekly-table tbody tr:not([data-week-key]) td {
-    display: table-cell;
-    padding: 12px;
-    color: #999;
-  }
-
-  .summary-toggle {
-    display: none;
-  }
-
-  #weekly-table td.mobile-actions .action-stack {
+  /* Make action stack horizontal */
+  #weekly-table tbody td.mobile-actions .action-stack {
     display: flex;
     flex-direction: row;
     gap: 8px;
@@ -1655,41 +1745,79 @@ th.num {
     align-items: center;
   }
 
-  #weekly-table td.mobile-actions .action-stack button {
+  #weekly-table tbody td.mobile-actions .action-stack button {
     width: auto;
+    max-width: none;
   }
 
-  #weekly-table td.mobile-actions .mobile-hint {
-    display: none;
-  }
-
-  /* All columns visible on desktop in table format */
-  #weekly-table td.mobile-actions {
-    display: table-cell !important;
-  }
-
-  #weekly-table tbody tr[data-week-key] td.week-cell {
-    text-align: left;
-  }
-
-  #weekly-table tbody tr[data-week-key] .week-toggle {
-    flex-direction: row;
-    align-items: center;
+  /* Wider cards with better spacing */
+  #weekly-table tbody tr[data-week-key] {
     padding: 0;
   }
 
-  #weekly-table tbody tr[data-week-key] .week-toggle .week-label {
-    display: none;
+  #weekly-table
+    tbody
+    tr[data-week-key]
+    td:not(.week-cell):not(.mobile-actions) {
+    padding: 14px 20px;
   }
 
-  #weekly-table tbody tr[data-week-key] .week-toggle .toggle-hint {
-    display: none;
+  #weekly-table tbody tr[data-week-key] td.week-cell {
+    padding: 16px 20px;
+  }
+}
+
+/* Desktop - Even wider cards with grid layout for metrics */
+@media (min-width: 900px) {
+  /* Wider cards with more padding */
+  #weekly-table tbody tr[data-week-key] {
+    max-width: 100%;
+  }
+
+  #weekly-table
+    tbody
+    tr[data-week-key]
+    td:not(.week-cell):not(.mobile-actions) {
+    padding: 16px 24px;
+    font-size: 1rem;
+  }
+
+  #weekly-table tbody tr[data-week-key] td.week-cell {
+    padding: 18px 24px;
+  }
+
+  #weekly-table tbody tr[data-week-key] td.week-cell strong {
+    font-size: 1.2rem;
+  }
+
+  /* Enhanced spacing for key metrics */
+  #weekly-table tbody tr[data-week-key] td.metric-takehome {
+    font-size: 1.1rem;
+    padding: 18px 24px;
+  }
+
+  #weekly-table
+    tbody
+    tr[data-week-key]
+    td.metric-takehome
+    .metric-value
+    strong {
+    font-size: 1.2rem;
+  }
+
+  #weekly-table tbody tr[data-week-key] td.metric-net .metric-value strong {
+    font-size: 1.15rem;
+  }
+
+  /* Better action button styling */
+  #weekly-table tbody tr[data-week-key] td.mobile-actions {
+    padding: 16px 24px;
   }
 }
 
 /* Highlight columns */
 td.paydate {
-  color: #1d4ed8;
+  color: var(--color-paydate);
   white-space: nowrap;
 }
 
@@ -1714,16 +1842,16 @@ th.net-header div:first-child {
 
 th.net-header div:last-child {
   font-size: 0.85em;
-  color: #aaa;
+  color: var(--muted);
   font-weight: 400;
 }
 
 td.netcell strong {
-  color: #4ade80;
+  color: var(--color-net);
   font-weight: 600;
 }
 td.takehome strong {
-  color: #2dd4bf;
+  color: var(--color-takehome);
   font-weight: 600;
 }
 
@@ -1741,19 +1869,106 @@ td.takehome strong {
   justify-content: space-between;
   gap: 12px;
   border: 1px solid var(--card-border);
+  border-left: 4px solid var(--card-border);
   border-radius: 8px;
   padding: 8px 12px;
   background: var(--card-bg);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--text) 8%, transparent);
 }
 
-@media (min-width: 700px) {
+@media (min-width: 600px) {
   .stats-paired {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 .stats-paired strong {
+  font-weight: 600;
+}
+
+/* YTD Stats - Category-based colors with 4px left borders */
+/* Hours */
+#avg-hours {
+  color: var(--color-hours);
+}
+
+/* Gross Income */
+#stat-gross,
+#avg-gross {
+  color: var(--color-gross);
+  font-weight: 600;
+}
+
+.stats-paired > div:has(#stat-gross),
+.stats-paired > div:has(#avg-gross) {
+  border-left-color: var(--color-gross);
+}
+
+/* Tax */
+#stat-tax,
+#avg-tax {
+  color: var(--color-tax);
+  font-weight: 600;
+}
+
+.stats-paired > div:has(#stat-tax),
+.stats-paired > div:has(#avg-tax) {
+  border-left-color: var(--color-tax);
+}
+
+/* Retirement */
+#stat-retire,
+#avg-retire {
+  color: var(--color-retirement);
+  font-weight: 600;
+}
+
+.stats-paired > div:has(#stat-retire),
+.stats-paired > div:has(#avg-retire) {
+  border-left-color: var(--color-retirement);
+}
+
+/* Net Income - emphasized */
+#stat-net,
+#avg-net {
+  color: var(--color-net);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+.stats-paired > div:has(#stat-net),
+.stats-paired > div:has(#avg-net) {
+  border-left-color: var(--color-net);
+  border-left-width: 4px;
+  background: color-mix(in srgb, var(--color-net) 8%, var(--card-bg));
+  font-weight: 600;
+}
+
+/* Tip-Outs */
+#stat-tipouts,
+#avg-tipouts {
+  color: var(--color-tipouts);
+  font-weight: 600;
+}
+
+.stats-paired > div:has(#stat-tipouts),
+.stats-paired > div:has(#avg-tipouts) {
+  border-left-color: var(--color-tipouts);
+}
+
+/* Take-Home - emphasized */
+#stat-takehome,
+#avg-takehome {
+  color: var(--color-takehome);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+.stats-paired > div:has(#stat-takehome),
+.stats-paired > div:has(#avg-takehome) {
+  border-left-color: var(--color-takehome);
+  border-left-width: 4px;
+  background: color-mix(in srgb, var(--color-takehome) 8%, var(--card-bg));
   font-weight: 600;
 }
 /* ---------- Weekly Summary Card ---------- */
@@ -1821,15 +2036,6 @@ td.takehome strong {
   padding-bottom: 10px;
 }
 
-/* highlight Tip-Outs similar to others */
-#stat-tipouts {
-  color: #f87171;
-  font-weight: 600;
-}
-#avg-tipouts {
-  color: #fca5a5;
-}
-
 /* table spacing tweaks */
 .summary-card table th,
 .summary-card table td {
@@ -1839,23 +2045,10 @@ td.takehome strong {
 .summary-card table tr:hover {
   background: var(--table-hover);
 }
-/* YTD highlights */
-#stat-gross {
-  color: #fbbf24;
-  font-weight: 600;
-} /* gold */
-#stat-net {
-  color: #4ade80;
-  font-weight: 600;
-} /* green */
-#stat-takehome {
-  color: #2dd4bf;
-  font-weight: 600;
-} /* teal */
 
 /* Details tables */
 .details-table th {
-  background: #242424;
+  background: var(--table-header-bg);
 }
 .details-table td {
   font-size: 0.85rem;
@@ -1894,7 +2087,7 @@ input[type="file"] {
   position: relative;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 900px) {
   .entry-card {
     max-width: 400px;
     margin-left: auto;
@@ -1911,13 +2104,13 @@ input[type="file"] {
 }
 
 .entry-footer button {
-  background: #2563eb;
+  background: var(--button-bg);
   font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px color-mix(in srgb, #000000 40%, transparent);
 }
 
 .entry-footer button:hover {
-  background: #1e40af;
+  background: var(--button-bg-hover);
 }
 
 #weekly-table th:last-child,
@@ -1933,7 +2126,7 @@ input[type="file"] {
 
 #weekly-table td:last-child {
   text-align: center;
-  background: #181818;
+  background: var(--card-bg);
   border-left: 1px solid var(--card-border);
 }
 #weekly-table td.actions {
@@ -1983,18 +2176,20 @@ input[type="file"] {
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-left: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .theme-toggle:hover {
   background: var(--ghost-hover);
   border-color: var(--button-bg);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--button-bg) 20%, transparent);
 }
 
 .theme-toggle:focus {
   outline: none;
   border-color: var(--button-bg);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--button-bg) 20%, transparent);
 }
 
 .theme-toggle option {

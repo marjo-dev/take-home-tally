@@ -28,7 +28,7 @@ A progressive web app (PWA) for tracking variable income (tips, hourly wages, ti
 
 ### 🌗 Interface
 
-- **Dark Mode Toggle** – Built-in light/dark mode switch (currently in Settings page).
+- **Dark Mode Toggle** – Built-in light/dark mode switch.
 - **Offline Support** – Data stored locally using IndexedDB for persistence.
 - **Data Export** – Export or back up logs as JSON or CSV.
 
@@ -49,11 +49,6 @@ A progressive web app (PWA) for tracking variable income (tips, hourly wages, ti
 - Step-by-step onboarding to collect tax preferences and introduce core features.
 - Optional tooltips or guided popups for ongoing app discovery.
 
-#### 🌗 Dark Mode Accessibility
-
-- Currently available in the **Settings** page.
-- Planned enhancement: make dark-mode toggle accessible **globally** via the header or navigation bar.
-
 #### 📊 Earnings Insights, Reports & Visualization
 
 - Future comparison mode for analyzing pay trends over time.
@@ -70,7 +65,7 @@ A progressive web app (PWA) for tracking variable income (tips, hourly wages, ti
 
 #### 💻 Code Refactor and Tech Stack Upgrade
 
-- Plans for a full code refactor focused on performance, scalability, and easier long-term maintenance and feature upgrades. This will involve reorganizing the current HTML/CSS/JS codebase, introducing Sass for cleaner and more maintainable styling, and preparing the app for a future migration to a more robust framework like React.
+- Plans for a full code refactor focused on performance, scalability, and easier long-term maintenance and feature development. This will include reorganizing the current HTML/CSS/JS codebase, introducing Sass for cleaner and more maintainable styling, adding TypeScript for stronger type safety and reliability, and preparing the app for a future migration to a more robust framework like React.
 
 ---
 

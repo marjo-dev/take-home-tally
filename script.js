@@ -628,22 +628,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const tr = document.createElement("tr");
         tr.setAttribute("data-week-key", wk.key);
         const detailsId = `details-${wk.key}`;
+
+        // Helper function to create label with info button
+        const createLabelWithInfo = (labelText, helpText, className = "") => {
+          return `<span class="metric-label ${className}">${labelText}<button type="button" class="info-btn" data-help="${helpText}">ⓘ</button></span>`;
+        };
+
         tr.innerHTML = `
-      <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)} &ndash; ${fmtDate(wk.weekEnd)}</strong></span><span class="toggle-hint muted">tap to expand</span></button></td>
-      <td class="num" data-label="Hours Worked">${t.hours.toFixed(2)} h</td>
-      <td class="num mobile-extra" data-label="Hourly Wages">${fmtMoney(t.hourlyPay)}</td>
-      <td class="num mobile-extra" data-label="Total Credit Card Tips">${fmtMoney(t.tips)}</td>
-      <td class="num mobile-extra" data-label="Total Cash Tips">${fmtMoney(t.cashTips)}</td>
-      <td class="num mobile-extra" data-label="Gross Income">${fmtMoney(t.gross)}</td>
-      <td class="num mobile-extra" data-label="Taxable Income">${fmtMoney(t.taxableIncome)}</td>
-      <td class="num mobile-extra" data-label="Estimated Tax Deduction">${fmtMoney(t.tax)}</td>
-      <td class="paydate" data-label="Pay Date">${fmtDate(wk.payDateISO)}</td>
-      <td class="num netcell" data-label="Net Income" data-sublabel="(Estimated Paycheck Amount)"><strong>${fmtMoney(t.net)}</strong></td>
-      <td class="num mobile-extra takehome" data-label="Total Take-Home Amount"><strong>${fmtMoney(t.takeHome)}</strong></td>
-      <td class="num mobile-extra" data-label="Total Tip-Outs">${fmtMoney(t.tipOuts)}</td>
-      <td class="num mobile-extra" data-label="Retirement Contribution">${fmtMoney(t.retirement)}</td>
-      <td class="num mobile-extra" data-label="Employer Match">${fmtMoney(t.match)}</td>
-      <td class="mobile-actions" data-label="">
+      <td class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)} &ndash; ${fmtDate(wk.weekEnd)}</strong></span><span class="toggle-hint muted">tap to expand</span></button></td>
+      <td class="num metric-hours">${createLabelWithInfo("Hours Worked", "Total hours worked during the pay period", "label-hours")}<span class="metric-value">${t.hours.toFixed(2)} h</span></td>
+      <td class="num mobile-extra metric-hourly-wages">${createLabelWithInfo("Hourly Wages", "Total hourly pay calculated as hours worked × hourly rate for your role(s)", "label-hourly-wages")}<span class="metric-value">${fmtMoney(t.hourlyPay)}</span></td>
+      <td class="num mobile-extra metric-cc-tips">${createLabelWithInfo("Total Credit Card Tips", "Tips received via credit card payments. These are included in your taxable income.", "label-cc-tips")}<span class="metric-value">${fmtMoney(t.tips)}</span></td>
+      <td class="num mobile-extra metric-cash-tips">${createLabelWithInfo("Total Cash Tips", "Cash tips received before tip-outs. These are added to your take-home amount does not affect your taxable income.", "label-cash-tips")}<span class="metric-value">${fmtMoney(t.cashTips)}</span></td>
+      <td class="num mobile-extra metric-gross">${createLabelWithInfo("Gross Income", "Hourly wages + credit card tips. This is your taxable income before any deductions.", "label-gross")}<span class="metric-value">${fmtMoney(t.gross)}</span></td>
+      <td class="num mobile-extra metric-taxable">${createLabelWithInfo("Taxable Income", "Gross income minus 401(k) contributions. This is the amount your taxes are calculated on.", "label-taxable")}<span class="metric-value">${fmtMoney(t.taxableIncome)}</span></td>
+      <td class="num mobile-extra metric-tax">${createLabelWithInfo("Estimated Tax Deduction", "Tax amount calculated from taxable income using your tax rate setting. This is an estimate and may differ from your actual paycheck.", "label-tax")}<span class="metric-value">${fmtMoney(t.tax)}</span></td>
+      <td class="paydate metric-paydate">${createLabelWithInfo("Pay Date", "The date you will receive your paycheck (typically 3 days after the week ends)", "label-paydate")}<span class="metric-value">${fmtDate(wk.payDateISO)}</span></td>
+      <td class="num netcell metric-net">${createLabelWithInfo("Net Income", "Gross income minus all deductions (tax, 401k, Roth 401k, other). This is your estimated paycheck amount that gets deposited into your bank account.", "label-net")}<span class="metric-sublabel">(Estimated Paycheck Amount)</span><span class="metric-value"><strong>${fmtMoney(t.net)}</strong></span></td>
+      <td class="num mobile-extra takehome metric-takehome">${createLabelWithInfo("Total Take-Home Amount", "This is what you actually take home for the week. It's the total of your paycheck amount and cash tips minus tip-outs.", "label-takehome")}<span class="metric-value"><strong>${fmtMoney(t.takeHome)}</strong></span></td>
+      <td class="num mobile-extra metric-tipouts">${createLabelWithInfo("Total Tip-Outs", "Total amount you tipped out to co-workers (hosts, expo, bartenders, etc.) during this pay period.", "label-tipouts")}<span class="metric-value">${fmtMoney(t.tipOuts)}</span></td>
+      <td class="num mobile-extra metric-retirement">${createLabelWithInfo("Retirement Contribution", "Sum of your 401(k), Roth 401(k), and employer match contributions for this pay period.", "label-retirement")}<span class="metric-value">${fmtMoney(t.retirement)}</span></td>
+      <td class="num mobile-extra metric-match">${createLabelWithInfo("Employer Match", "Your employer's matching contribution to your retirement account. Free money!", "label-match")}<span class="metric-value">${fmtMoney(t.match)}</span></td>
+      <td class="mobile-actions">
         <div class="action-stack">
           <button class="btn-ghost" data-toggle="${wk.key}" aria-expanded="false" aria-controls="${detailsId}">Details</button>
           <p class="mobile-hint">Tap the Details button above ⬆️ to reveal breakdown by day.<br> Scroll ⬅️ horizontally ➡️ to see more info.<br> Delete option appears at the end of the row.</p>
@@ -655,7 +661,8 @@ document.addEventListener("DOMContentLoaded", () => {
         details.className = "week-details";
         details.id = detailsId;
         details.hidden = true;
-        const colCount = document.querySelector("#weekly-table thead tr").children.length;
+        // Hardcode column count since we're not using thead anymore
+        const colCount = 15;
         details.innerHTML = `<td colspan="${colCount}"><div class="details-header">Daily Breakdown</div><div class="details-table-wrapper">${weekDetailsHTML(wk)}</div></td>`;
         tbody.appendChild(details);
       }
