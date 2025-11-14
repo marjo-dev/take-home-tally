@@ -247,7 +247,7 @@ h2 {
 }
 
 .app-description-content.expanded {
-  max-height: 500px;
+  max-height: 3000px;
   padding: 16px;
 }
 
@@ -348,7 +348,7 @@ body.theme-light .settings-description {
 }
 
 .settings-description-content.expanded {
-  max-height: 500px;
+  max-height: 3000px;
   padding: 16px;
 }
 
@@ -636,6 +636,57 @@ label.button-label:hover {
 .muted {
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+/* User Tips - Prominent styling for important information */
+.user-tips {
+  background: rgba(59, 130, 246, 0.15);
+  border-left: 4px solid var(--button-bg);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+  position: relative;
+}
+
+.user-tips::before {
+  content: "💡";
+  position: absolute;
+  left: -12px;
+  top: 14px;
+  font-size: 1.2rem;
+  background: var(--card-bg);
+  padding: 4px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Light theme adjustments */
+body.theme-light .user-tips {
+  background: rgba(37, 99, 235, 0.1);
+  border-left-color: var(--button-bg);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+/* User tips list styling */
+.user-tips-list {
+  margin: 12px 0;
+  padding-left: 24px;
+  list-style-type: disc;
+}
+
+.user-tips-list li {
+  margin: 8px 0;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.user-tips-list li strong {
+  color: var(--button-bg);
+  font-weight: 600;
 }
 
 /* =====================================================

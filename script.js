@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       roth401kRate: 0,
       employerMatch: 3,
       otherDeductions: 0,
-      theme: "dark",
+      theme: "light",
       roles: { "Server": 10.00, "Host": 15.00, "Expo": 15.00, "Bartender": 15.00 }
     };
   }
@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("set-match").value = settings.employerMatch;
     document.getElementById("set-other").value = settings.otherDeductions;
     const themeSelect = document.getElementById("set-theme");
-    if (themeSelect) themeSelect.value = settings.theme || "dark";
+    if (themeSelect) themeSelect.value = settings.theme || "light";
     renderRolesTable();
     refreshRoleSelect();
   }
@@ -438,7 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
     settings.roth401kRate = parseFloat(document.getElementById("set-roth401k").value) || 0;
     settings.employerMatch = parseFloat(document.getElementById("set-match").value) || 0;
     settings.otherDeductions = parseFloat(document.getElementById("set-other").value) || 0;
-    settings.theme = document.getElementById("set-theme").value || "dark";
+    settings.theme = document.getElementById("set-theme").value || "light";
     await saveSettings();
     refreshWeekTable();
     applyTheme(settings.theme);
@@ -891,7 +891,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const storedEntries = await loadEntries();
       entries = Array.isArray(storedEntries) ? storedEntries : [];
 
-      if (!settings.theme) settings.theme = "dark";
+      if (!settings.theme) settings.theme = "light";
 
       syncYtdLabels();
       renderSettings();

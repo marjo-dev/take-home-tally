@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TakeHome Tally</title>
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#121212" />
+    <meta name="theme-color" content="#f5f7fb" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="TakeHome Tally" />
@@ -22,18 +22,29 @@
             <span class="toggle-hint muted">tap to hide</span>
           </button>
           <div id="app-description-content" class="app-description-content expanded">
-            <p class="muted">TakeHome Tally gives you a simple way to keep track of your hours, tips and deductions. Predict your paycheck amount before you get paid and see what you actually take home each week. Stay on top of your changing income with simple weekly insights.
+            <p class="user-tips">Welcome! TakeHome Tally gives you a simple way to keep track of your hours, tips and deductions. Predict your paycheck amount before you get paid and see what you actually take home each week. Stay on top of your changing income with simple weekly insights.
             </p>
-            <p class="muted">
+            <p class="user-tips">
               Note: This app runs right in your web browser.<br>
               You can bookmark this page to return anytime, or "install 📲" it to your phone's home screen for a more app-like experience:
             </p>
-            <ul class="muted">
+            <ul class="user-tips-list">
               <li><strong>iPhone:</strong> tap <em>Share → Add to Home Screen</em></li>
               <li><strong>Android:</strong> tap the <em>menu (⋮)</em> and choose <em>Add to Home screen</em></li>
             </ul>
+            <p class="user-tips">💡 User Tips: Navigate using the buttons at the bottom of the screen. If it's your first time using the app, first go to the Settings page to set your tax rates, retirement contributions, employer match, and any other deductions.
+              <ul class="user-tips-list">
+                <li>Daily Entry: Log your shifts here.</li>
+                <li>Weekly Summary: View your weekly summary here.</li>
+                <li>Year-to-Date: View your year-to-date overview here.</li>
+                <li>Settings: Configure your settings here.</li>
+              </ul>
+            </p>
             <p class="muted">
               For more information, see the <a href="https://github.com/marjo-dev/take-home-tally/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a> on GitHub.
+            </p>
+            <p class="muted">
+              You can hide this message by tapping the "About This App" button at the top of this card.
             </p>
           </div>
         </div>
@@ -58,24 +69,27 @@
                   <span class="toggle-hint muted">tap to hide</span>
                 </button>
                 <div id="settings-description-content" class="settings-description-content expanded">
-                  <p class="muted">
+                  <p class="user-tips">
                     Set your tax rates, retirement contributions, employer match, and any other deductions. 
                     These values are saved locally and used to estimate your weekly take-home pay.
                   </p>
-                  <p class="muted">
+                  <p class="user-tips">
                     Note: This app provides estimates only — it doesn't calculate your exact taxes or retirement contributions. 
                     Your actual paycheck may differ based on your employer's payroll system and specific withholdings.
                   </p>
-                  <p class="muted">
+                  <p class="user-tips">
                     By default, a 20% tax deduction is applied to taxable income — a reasonable starting point for most tipped workers.
                   </p>
-                  <p class="muted">
+                  <p class="user-tips">
                     If you don't have a 401(k), Roth 401(k), or employer match, you can leave those at 0%. 
                     The same goes for any other optional deductions.
                   </p>
                   <p class="muted">
                     You can update these settings anytime to refresh your estimated take-home pay.
                   </p>
+                  <p class="muted">
+                    You can hide this message by tapping the "About Settings" button at the top of this card.
+                  </p>      
                 </div>
               </div>
               <div class="card-divider"></div>
@@ -126,7 +140,7 @@
             <!-- ROLE MANAGER -->
             <div class="card">
               <h2>👤 Role Manager</h2>
-              <p class="muted">Set up your roles and hourly rates here. These roles will appear in the Daily Entry dropdown menu when you log your shift. You can add or edit roles as needed, and delete any roles you don't need anymore.</p>
+              <p class="user-tips">Set up your roles and hourly rates here. These roles will appear in the Daily Entry dropdown menu when you log your shift. You can add or edit roles as needed, and delete any roles you don't need anymore.</p>
               <div class="card-divider"></div>
               <div class="entry-column">
                 <div class="label-group">
@@ -167,7 +181,7 @@
             <!-- BACKUP / RESTORE -->
             <div class="card">
               <h2>💾 Backup / Restore</h2>
-              <p class="muted">
+              <p class="user-tips">
                 Here is where you can back up your app data, or export your entries to a spreadsheet. You can also reset everything if you want to start fresh, and restore from a backup.
               </p>
 
