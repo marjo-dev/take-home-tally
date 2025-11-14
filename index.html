@@ -10,12 +10,21 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="TakeHome Tally" />
     <link rel="apple-touch-icon" href="icons/icon-96.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="wrap">
       <header class="app-header">
-        <h1><img src="icons/icon-96.png" alt="TakeHome Tally" style="width: 24px; height: 24px;"> TakeHome Tally</h1>
+        <h1>
+          <img src="icons/icon-96.png" alt="TakeHome Tally" style="width: 24px; height: 24px;"> TakeHome Tally
+          <select id="set-theme" class="theme-toggle">
+            <option value="dark">🌙 Dark</option>
+            <option value="light">☀️ Light</option>
+          </select>
+        </h1>
         <div class="app-description">
           <button type="button" class="app-description-toggle expanded" aria-expanded="true" aria-controls="app-description-content">
             <span class="toggle-label">About This App</span>
@@ -32,19 +41,19 @@
               <li><strong>iPhone:</strong> tap <em>Share → Add to Home Screen</em></li>
               <li><strong>Android:</strong> tap the <em>menu (⋮)</em> and choose <em>Add to Home screen</em></li>
             </ul>
-            <p class="user-tips">💡 <strong>User Tips:</strong> Navigate using the buttons at the bottom of the screen. If it's your first time using the app, first go to the Settings page to set your tax rates, retirement contributions, employer match, and any other deductions.
+            <p class="user-tips">💡 <strong>User Tip:</strong> If it's your first time using the app, first go to the <strong>Settings</strong> page to set your tax rates, retirement contributions, employer match, and any other deductions. Navigate using the buttons at the bottom of the screen. 
               <ul class="user-tips-list">
                 <li><strong>Daily Entry:</strong> Log your shifts here.</li>
                 <li><strong>Weekly Summary:</strong> Here is where you'll find your weekly summaries: it'll show your income breakdown by week, your estimated paycheck amount, and your total take-home amount.</li>
                 <li><strong>Year-to-Date:</strong> View your year-to-date totals and per week averages. This is a great way to see your income trends over time.</li>
-                <li><strong>Settings:</strong> Configure your settings here. Set tax rate and retirement contributions in the Settings card, add or edit your roles and hourly rates in the Role Manager card.</li>
+                <li><strong>Settings:</strong> Configure your settings here. Set tax rate and retirement contributions in the <em>Settings</em> card, add or edit your roles and hourly rates in the <em>Role Manager</em> card.</li>
               </ul>
             </p>
             <p class="user-tips">
-              If you want to report a bug, have any questions or want to give feedback, feel free to fill out  <em><a href="https://forms.gle/tTRXMWqUSMBzHDTP6">this google form</a></em>. In fact, I'd love to hear from you!
+              If you want to report a bug, have any questions or want to give feedback, feel free to fill out  <em><a href="https://forms.gle/tTRXMWqUSMBzHDTP6">this form</a></em>. In fact, I'd love to hear from you!
             </p>
             <p class="muted">
-              For more information, check out the <em><a href="https://github.com/marjo-dev/take-home-tally/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a></em> on GitHub. There you can read more about the app, its features, and its planned enhancements.
+              For more information, check out the <em><a href="https://github.com/marjo-dev/take-home-tally/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a></em> on GitHub. There you can read more about the app, its features, planned enhancements and future upgrades.
             </p>
             <p class="muted">
               You can hide this message by tapping the "About This App" button at the top ⬆️ of this card.
@@ -117,15 +126,6 @@
                   <label
                     ><span>Other Deductions (%)</span>
                     <input type="number" id="set-other" step="0.1" inputmode="decimal" />
-                  </label>
-                </div>
-                <div class="label-group">
-                  <label
-                    ><span>App Color Scheme</span>
-                    <select id="set-theme">
-                      <option value="dark">Dark</option>
-                      <option value="light">Light</option>
-                    </select>
                   </label>
                 </div>
               </div>
@@ -220,7 +220,7 @@
             <form id="daily-entry-form" class="entry-column">
               <div class="label-group">
                 <label
-                  ><span>Date</span>
+                  ><span><strong>Date</strong></span>
                   <div class="date-input-wrap">
                     <input type="date" id="entry-date" required autofocus />
                     <button id="today-btn" type="button" class="btn-ghost small">
@@ -233,7 +233,7 @@
 
               <div class="label-group">
                 <label
-                  ><span>Role</span>
+                  ><span><strong>Role</strong></span>
                   <select id="entry-role"></select>
                 </label>
                 <span class="muted helper-text">Select role from the dropdown menu</span>
@@ -241,7 +241,7 @@
 
               <div class="label-group">
                 <label
-                  ><span>Hours Worked</span>
+                  ><span><strong>Hours Worked</strong></span>
                   <input
                     type="number"
                     id="entry-hours"
@@ -256,7 +256,7 @@
 
               <div class="label-group">
                 <label
-                  ><span>Credit Card Tips ($)</span>
+                  ><span><strong>Credit Card Tips ($)</strong></span>
                   <input
                     type="number"
                     id="entry-tips"
@@ -270,7 +270,7 @@
 
               <div class="label-group">
                 <label
-                  ><span>Cash Tips ($)</span>
+                  ><span><strong>Cash Tips ($)</strong></span>
                   <input
                     type="number"
                     id="entry-cash"
@@ -284,7 +284,7 @@
 
               <div class="label-group">
                 <label
-                  ><span>Tip-Outs ($)</span>
+                  ><span><strong>Tip-Outs ($)</strong></span>
                   <input
                     type="number"
                     id="entry-tipouts"
@@ -314,7 +314,7 @@
               </select>
             </div>
 
-            <p class="section-subtext">Detailed week-by-week totals. You can filter by month to see breakdowns for a specific month. Tap the Pay Period header to expand the details for that week.</p>
+            <p class="user-tips">Detailed week-by-week totals. You can filter by month to see breakdowns for a specific month. Tap the Pay Period header to expand the details for that week.</p>
 
             <div class="table-wrap">
               <table id="weekly-table">

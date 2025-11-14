@@ -629,7 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tr.setAttribute("data-week-key", wk.key);
         const detailsId = `details-${wk.key}`;
         tr.innerHTML = `
-      <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)} &ndash; ${fmtDate(wk.weekEnd)}</strong></span></button></td>
+      <td data-label="Pay Period" class="week-cell"><button type="button" class="week-toggle" data-summary="${wk.key}" aria-expanded="false"><span class="week-meta"><span class="week-label">Pay Period</span><strong>${fmtDate(wk.weekStart)} &ndash; ${fmtDate(wk.weekEnd)}</strong></span><span class="toggle-hint muted">tap to expand</span></button></td>
       <td class="num" data-label="Hours Worked">${t.hours.toFixed(2)} h</td>
       <td class="num mobile-extra" data-label="Hourly Wages">${fmtMoney(t.hourlyPay)}</td>
       <td class="num mobile-extra" data-label="Total Credit Card Tips">${fmtMoney(t.tips)}</td>
@@ -646,7 +646,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <td class="mobile-actions" data-label="">
         <div class="action-stack">
           <button class="btn-ghost" data-toggle="${wk.key}" aria-expanded="false" aria-controls="${detailsId}">Details</button>
-          <p class="mobile-hint">Tap the Details button to reveal breakdown by day. Scroll horizontally to see more info. Delete option appears at the end of the row.</p>
+          <p class="mobile-hint">Tap the Details button above ⬆️ to reveal breakdown by day.<br> Scroll ⬅️ horizontally ➡️ to see more info.<br> Delete option appears at the end of the row.</p>
         </div>
       </td>`;
         tbody.appendChild(tr);
@@ -689,6 +689,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (button instanceof HTMLElement) {
         button.setAttribute("aria-expanded", open ? "true" : "false");
         button.classList.toggle("expanded", open);
+        const hint = button.querySelector(".toggle-hint");
+        if (hint) {
+          hint.textContent = open ? "tap to hide" : "tap to expand";
+        }
       }
       return;
     }
