@@ -429,7 +429,7 @@
     </nav>
 
     <!-- Script -->
-    <script src="script.js"></script>
+    <script type="module" src="js/app.js"></script>
     <script>
       if ("serviceWorker" in navigator) {
         let refreshing = false;
@@ -488,92 +488,6 @@
       window.addEventListener('appinstalled', () => {
         console.log('✅ PWA installed successfully');
         deferredPrompt = null;
-      });
-    </script>
-    <!--NAVIGATION BAR SCRIPT-->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const navButtons = Array.from(document.querySelectorAll(".top-nav button"));
-        const pages = Array.from(document.querySelectorAll(".page"));
-
-        const activatePage = (pageKey) => {
-          const targetId = `page-${pageKey}`;
-          pages.forEach((page) => {
-            page.classList.toggle("active", page.id === targetId);
-          });
-
-          navButtons.forEach((button) => {
-            const isActive = button.dataset.page === pageKey;
-            button.classList.toggle("is-active", isActive);
-            button.setAttribute("aria-pressed", isActive ? "true" : "false");
-            if (isActive) {
-              button.setAttribute("aria-current", "page");
-            } else {
-              button.removeAttribute("aria-current");
-            }
-          });
-        };
-
-        navButtons.forEach((button) => {
-          button.addEventListener("click", () => activatePage(button.dataset.page));
-        });
-
-        const initialPage = document.querySelector(".page.active")?.id.replace("page-", "") || "entry";
-        activatePage(initialPage);
-      });
-    </script>
-    <!--APP DESCRIPTION TOGGLE SCRIPT-->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const toggleButton = document.querySelector(".app-description-toggle");
-        const content = document.getElementById("app-description-content");
-        
-        if (toggleButton && content) {
-          toggleButton.addEventListener("click", () => {
-            const isExpanded = content.classList.contains("expanded");
-            
-            if (isExpanded) {
-              content.classList.remove("expanded");
-              toggleButton.classList.remove("expanded");
-              toggleButton.setAttribute("aria-expanded", "false");
-              const hint = toggleButton.querySelector(".toggle-hint");
-              if (hint) hint.textContent = "tap to expand";
-            } else {
-              content.classList.add("expanded");
-              toggleButton.classList.add("expanded");
-              toggleButton.setAttribute("aria-expanded", "true");
-              const hint = toggleButton.querySelector(".toggle-hint");
-              if (hint) hint.textContent = "tap to hide";
-            }
-          });
-        }
-      });
-    </script>
-    <!--SETTINGS DESCRIPTION TOGGLE SCRIPT-->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const toggleButton = document.querySelector(".settings-description-toggle");
-        const content = document.getElementById("settings-description-content");
-        
-        if (toggleButton && content) {
-          toggleButton.addEventListener("click", () => {
-            const isExpanded = content.classList.contains("expanded");
-            
-            if (isExpanded) {
-              content.classList.remove("expanded");
-              toggleButton.classList.remove("expanded");
-              toggleButton.setAttribute("aria-expanded", "false");
-              const hint = toggleButton.querySelector(".toggle-hint");
-              if (hint) hint.textContent = "tap to expand";
-            } else {
-              content.classList.add("expanded");
-              toggleButton.classList.add("expanded");
-              toggleButton.setAttribute("aria-expanded", "true");
-              const hint = toggleButton.querySelector(".toggle-hint");
-              if (hint) hint.textContent = "tap to hide";
-            }
-          });
-        }
       });
     </script>
   </body>
