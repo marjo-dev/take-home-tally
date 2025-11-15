@@ -19,6 +19,9 @@ import { initToggles } from "./ui/toggles.js";
 // Export
 import { exportData, exportCSV, importData } from "./export.js";
 
+// Service Worker / PWA
+import { registerServiceWorker, initPWAInstallPrompt } from "./pwa.js";
+
 // App State
 let settings = getDefaultSettings();
 let entries = [];
@@ -84,6 +87,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     initNavigation();
     initToggles();
 
+    // Initialize Service Worker and PWA
+    registerServiceWorker();
+    initPWAInstallPrompt();
+
     setupEventHandlers();
   } catch (err) {
     console.error("Failed to initialize storage", err);
@@ -98,6 +105,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     refreshRoleSelect(settings);
     initNavigation();
     initToggles();
+    registerServiceWorker();
+    initPWAInstallPrompt();
     setupEventHandlers();
   }
 });
