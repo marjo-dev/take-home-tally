@@ -48,5 +48,29 @@ export function initToggles() {
       }
     });
   }
+
+  // Settings page description toggle
+  const settingsPageToggleButton = document.querySelector(".settings-page-description-toggle");
+  const settingsPageContent = document.getElementById("settings-page-description-content");
+  
+  if (settingsPageToggleButton && settingsPageContent) {
+    settingsPageToggleButton.addEventListener("click", () => {
+      const isExpanded = settingsPageContent.classList.contains("expanded");
+      
+      if (isExpanded) {
+        settingsPageContent.classList.remove("expanded");
+        settingsPageToggleButton.classList.remove("expanded");
+        settingsPageToggleButton.setAttribute("aria-expanded", "false");
+        const hint = settingsPageToggleButton.querySelector(".toggle-hint");
+        if (hint) hint.textContent = "tap to expand";
+      } else {
+        settingsPageContent.classList.add("expanded");
+        settingsPageToggleButton.classList.add("expanded");
+        settingsPageToggleButton.setAttribute("aria-expanded", "true");
+        const hint = settingsPageToggleButton.querySelector(".toggle-hint");
+        if (hint) hint.textContent = "tap to hide";
+      }
+    });
+  }
 }
 

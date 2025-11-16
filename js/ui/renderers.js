@@ -110,7 +110,7 @@ export function refreshWeekTable(entries, settings, currentMonthFilter) {
 
   const tbody = document.querySelector("#weekly-table tbody");
   if (!tbody) return activeFilter;
-  
+
   tbody.innerHTML = "";
 
   // Calculate YTD totals
@@ -141,9 +141,9 @@ export function refreshWeekTable(entries, settings, currentMonthFilter) {
       <td class="num metric-hours">${createLabelWithInfo("Hours Worked", "Total hours worked during the pay period", "label-hours")}<span class="metric-value">${t.hours.toFixed(2)} h</span></td>
       <td class="num mobile-extra metric-hourly-wages">${createLabelWithInfo("Hourly Wages", "Total hourly pay calculated as hours worked × hourly rate for your role(s)", "label-hourly-wages")}<span class="metric-value">${fmtMoney(t.hourlyPay)}</span></td>
       <td class="num mobile-extra metric-cc-tips">${createLabelWithInfo("Total Credit Card Tips", "Tips received via credit card payments. These are included in your taxable income.", "label-cc-tips")}<span class="metric-value">${fmtMoney(t.tips)}</span></td>
-      <td class="num mobile-extra metric-cash-tips">${createLabelWithInfo("Total Cash Tips", "Cash tips received before tip-outs. These are added to your take-home amount does not affect your taxable income.", "label-cash-tips")}<span class="metric-value">${fmtMoney(t.cashTips)}</span></td>
-      <td class="num mobile-extra metric-gross">${createLabelWithInfo("Gross Income", "Hourly wages + credit card tips. This is your taxable income before any deductions.", "label-gross")}<span class="metric-value">${fmtMoney(t.gross)}</span></td>
-      <td class="num mobile-extra metric-taxable">${createLabelWithInfo("Taxable Income", "Gross income minus 401(k) contributions. This is the amount your taxes are calculated on.", "label-taxable")}<span class="metric-value">${fmtMoney(t.taxableIncome)}</span></td>
+      <td class="num mobile-extra metric-cash-tips">${createLabelWithInfo("Total Cash Tips", "Cash tips received before tip-outs. These are added to your take-home amount and does not affect your taxable income.", "label-cash-tips")}<span class="metric-value">${fmtMoney(t.cashTips)}</span></td>
+      <td class="num mobile-extra metric-gross">${createLabelWithInfo("Gross Income", "Hourly wages + credit card tips. This is your income before any deductions are applied. If you don't contribute to a 401(k), this should be the same as your taxable income.", "label-gross")}<span class="metric-value">${fmtMoney(t.gross)}</span></td>
+      <td class="num mobile-extra metric-taxable">${createLabelWithInfo("Taxable Income", "Gross income minus 401(k) contributions. This is the amount your taxes are calculated on. If you don't contribute to a 401(k), this should be the same as your gross income.", "label-taxable")}<span class="metric-value">${fmtMoney(t.taxableIncome)}</span></td>
       <td class="num mobile-extra metric-tax">${createLabelWithInfo("Estimated Tax Deduction", "Tax amount calculated from taxable income using your tax rate setting. This is an estimate and may differ from your actual paycheck.", "label-tax")}<span class="metric-value">${fmtMoney(t.tax)}</span></td>
       <td class="paydate metric-paydate">${createLabelWithInfo("Pay Date", "The date you will receive your paycheck (typically 3 days after the week ends)", "label-paydate")}<span class="metric-value">${fmtDate(wk.payDateISO)}</span></td>
       <td class="num netcell metric-net">${createLabelWithInfo("Net Income", "Gross income minus all deductions (tax, 401k, Roth 401k, other). This is your estimated paycheck amount that gets deposited into your bank account.", "label-net")}<span class="metric-sublabel">(Estimated Paycheck Amount)</span><span class="metric-value"><strong>${fmtMoney(t.net)}</strong></span></td>
@@ -154,7 +154,7 @@ export function refreshWeekTable(entries, settings, currentMonthFilter) {
       <td class="mobile-actions">
         <div class="action-stack">
           <button class="btn-ghost" data-toggle="${wk.key}" aria-expanded="false" aria-controls="${detailsId}">Details</button>
-          <p class="mobile-hint">Tap the Details button above ⬆️ to reveal breakdown by day.<br> Scroll ⬅️ horizontally ➡️ to see more info.<br> Delete option appears at the end of the row.</p>
+          <p class="mobile-hint">Tap the Details button above ⬆️ to reveal income breakdowns by day.<br> Scroll ⬅️ horizontally ➡️ to see more info.<br> <strong>Delete</strong> option appears at the end of each row.</p>
         </div>
       </td>`;
       tbody.appendChild(tr);

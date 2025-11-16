@@ -422,6 +422,106 @@ body.theme-light .settings-description {
   margin-top: 0;
 }
 
+/* Settings Page Description Expandable */
+.settings-page-description {
+  margin-bottom: 16px;
+  border: 1px solid;
+  border-color: rgba(42, 42, 42, 0.4);
+  border-radius: 8px;
+  background: var(--nav-bg);
+  overflow: hidden;
+}
+
+body.theme-light .settings-page-description {
+  border-color: rgba(225, 232, 245, 0.5);
+}
+
+.settings-page-description-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--nav-bg);
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+  position: relative;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.settings-page-description-toggle:hover {
+  background: var(--ghost-hover);
+}
+
+.settings-page-description-toggle .toggle-label {
+  flex: 1;
+}
+
+.settings-page-description-toggle .toggle-hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-right: 24px;
+}
+
+.settings-page-description-toggle::after {
+  content: "▼";
+  font-size: 1.1em;
+  transition: transform 0.25s ease;
+  color: var(--text);
+  font-weight: 600;
+  opacity: 1;
+  display: inline-block;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+}
+
+.settings-page-description-toggle.expanded::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.settings-page-description-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  padding: 0 16px;
+}
+
+.settings-page-description-content.expanded {
+  max-height: 3000px;
+  padding: 16px;
+}
+
+.settings-page-description-content p {
+  margin: 12px 0;
+}
+
+.settings-page-description-content p:first-child {
+  margin-top: 0;
+}
+
+.settings-page-description-content ul {
+  padding-left: 20px;
+}
+
+.settings-page-description-content a {
+  color: var(--button-bg);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.settings-page-description-content a:hover {
+  color: var(--button-bg-hover);
+}
+
 /* Card Divider */
 .card-divider {
   height: 1px;
@@ -745,6 +845,7 @@ body.theme-light .user-tips {
   margin: 12px 0;
   padding-left: 24px;
   list-style-type: disc;
+  font-size: 0.85rem;
 }
 
 .user-tips-list li {
@@ -779,7 +880,7 @@ body.theme-light .user-tips {
   font-size: 0.9rem;
 }
 
-/* Settings card: remove gap to prevent overflow */
+/* Deductions card: remove gap to prevent overflow */
 #page-settings .entry-column label {
   gap: 0;
 }
@@ -790,7 +891,7 @@ body.theme-light .user-tips {
   flex-shrink: 0;
 }
 
-/* Settings card: labels 60%, inputs 40% */
+/* Deductions card: labels 60%, inputs 40% */
 #page-settings .entry-column label {
   min-width: 0;
   overflow: hidden;

@@ -43,19 +43,20 @@
               <li><strong>iPhone:</strong> tap <em>Share → Add to Home Screen</em></li>
               <li><strong>Android:</strong> tap the <em>menu (⋮)</em> and choose <em>Add to Home screen</em></li>
             </ul>
-            <p class="user-tips">💡 <strong>User Tip:</strong> If it's your first time using the app, first go to the <strong>Settings</strong> page to set your tax rates, retirement contributions, employer match, and any other deductions. Navigate using the buttons at the bottom of the screen. 
+            <p class="user-tips" id="expanded-description-text"><strong>Important:</strong> If it's your first time using the app, first go to the <strong>Settings</strong> page to set your deductions, shift roles and hourly rates. </p>
+            <p class="user-tips" id="expanded-description-text"><strong>Navigation:</strong> Use the buttons at the bottom of the screen to navigate between pages.</p>
               <ul class="user-tips-list">
                 <li><strong>Daily Entry:</strong> Log your shifts here.</li>
-                <li><strong>Weekly Summary:</strong> Here is where you'll find your weekly summaries: it'll show your income breakdown by week, your estimated paycheck amount, and your total take-home amount.</li>
-                <li><strong>Year-to-Date:</strong> View your year-to-date totals and per week averages. This is a great way to see your income trends over time.</li>
-                <li><strong>Settings:</strong> Configure your settings here. Set tax rate and retirement contributions in the <em>Settings</em> card, add or edit your roles and hourly rates in the <em>Role Manager</em> card.</li>
+                <li><strong>Weekly Summary:</strong> View your weeky income breakdown and estimated paycheck amounts.</li>
+                <li><strong>Year-to-Date:</strong> View your year-to-date totals and per week averages. </li>
+                <li><strong>Settings:</strong> Configure your deductions, roles and hourly rates. You can also backup and restore your app data, or export it to other apps.</li>
               </ul>
             </p>
-            <p class="user-tips">
-              If you want to report a bug, have any questions or want to give feedback, feel free to fill out  <em><a href="https://forms.gle/tTRXMWqUSMBzHDTP6">this form</a></em>. In fact, I'd love to hear from you!
+            <p class="user-tips" id="expanded-description-text">
+              If you want to report a bug, have any questions or want to give feedback, feel free to fill out  <strong><a href="https://forms.gle/tTRXMWqUSMBzHDTP6">this form</a></strong>. In fact, I'd love to hear from you!
             </p>
             <p class="muted">
-              For more information, check out the <em><a href="https://github.com/marjo-dev/take-home-tally/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a></em> on GitHub. There you can read more about the app, its features, planned enhancements and future upgrades.
+              For more information, check out the <strong><a href="https://github.com/marjo-dev/take-home-tally/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a></strong> on GitHub. There you can read more about the app, its features, planned enhancements and future upgrades.
             </p>
             <p class="muted">
               You can hide this message by tapping the "About This App" button at the top ⬆️ of this card.
@@ -65,36 +66,55 @@
       </header>
       <main class="page-stack">
         <section id="page-settings" class="page">
+          <!-- SETTINGS PAGE DESCRIPTION -->
+          <div class="settings-page-description">
+            <button type="button" class="settings-page-description-toggle expanded" aria-expanded="true" aria-controls="settings-page-description-content">
+              <span class="toggle-label">⚙︎ About The Settings Page</span>
+              <span class="toggle-hint muted">tap to hide</span>
+            </button>
+            <div id="settings-page-description-content" class="settings-page-description-content expanded">
+              <p class="user-tips">
+                The <strong>Settings</strong> <em>page</em> is where you configure your app preferences and manage your data. There are <em>three cards</em> in this section: <strong>Deductions</strong>, <strong>Role Manager</strong>, and <strong>Backup / Restore</strong>.
+              </p>
+              <p class="user-tips">
+                The <strong>Deductions</strong> card is where you can set your tax rates, retirement contributions, employer match, and any other deductions.
+              </p>
+              <p class="user-tips">
+                The <strong>Role Manager</strong> card is where you can add or edit your roles and hourly rates. These roles will appear in the Daily Entry dropdown menu when you log your shift.
+              </p>
+              <p class="user-tips">
+                The <strong>Backup / Restore</strong> card is where you can backup your data, export your data to a spreadsheet, or restore from a backup.
+              </p>
+              <p class="muted">
+                You can hide this message by tapping the "About The Settings Page" button at the top ⬆️ of this card.
+              </p>
+            </div>
+          </div>
           <!-- SETTINGS + ROLE MANAGER + BACKUP/RESTORE -->
           <div class="grid settings-grid">
             <!-- SETTINGS -->
             <div class="card">
-              <h2>⚙️ Settings</h2>
+              <h2>💰 Deductions</h2>
               <div class="settings-description">
                 <button type="button" class="settings-description-toggle expanded" aria-expanded="true" aria-controls="settings-description-content">
-                  <span class="toggle-label">About Settings</span>
+                  <span class="toggle-label">About Deductions</span>
                   <span class="toggle-hint muted">tap to hide</span>
                 </button>
                 <div id="settings-description-content" class="settings-description-content expanded">
                   <p class="user-tips">
-                    Set your tax rates, retirement contributions, employer match, and any other deductions. The next card down (Role Manager) will allow you to add or edit your roles and hourly rates.
-                    These values are saved locally and used to estimate your weekly take-home pay.
+                    The values in this card are saved locally and used to estimate your weekly take-home pay.
                   </p>
                   <p class="user-tips">
-                    Note: This app provides estimates only — it doesn't calculate your exact taxes or retirement contributions. 
-                    Your actual paycheck may differ based on your employer's payroll system and specific withholdings.
+                    By default, this app applies a 20% tax deduction to taxable income, and I recommend keeping it here for now. I'm working on a future enhancement to automatically calculate your tax rate using federal and state tax brackets, which should provide a more accurate estimate.
                   </p>
                   <p class="user-tips">
-                    By default, a 20% tax deduction is applied to taxable income — a reasonable starting point for most tipped workers.
-                  </p>
-                  <p class="user-tips">
-                    If you don't have a 401(k), Roth 401(k), or employer match, you can leave those at 0%. The same goes for any other optional deductions.
+                    If you don't don't contribute to a 401(k) or Roth 401(k), you can leave those at 0% and the employer match won't apply either. The same goes for other optional deductions.
                   </p>
                   <p class="muted">
-                    You can update these settings anytime to refresh your estimated take-home pay.
+                    <strong>Note:</strong> This app provides <em>estimates only</em> — it doesn't calculate your exact taxes or retirement contributions. Your actual paycheck may differ based on your employer's payroll system and your own tax withholdings.
                   </p>
                   <p class="muted">
-                    You can hide this message by tapping the "About Settings" button at the top ⬆️ of this card.
+                    You can hide this message by tapping the "About Deductions" button at the top ⬆️ of this card.
                   </p>      
                 </div>
               </div>
@@ -422,10 +442,10 @@
     </div>
     <!-- NAVIGATION BAR FOR MOBILE-FIRST LAYOUT -->
     <nav class="top-nav" aria-label="Primary pages">
-      <button data-page="entry" aria-controls="page-entry">Daily Entry</button>
-      <button data-page="summary" aria-controls="page-summary">Weekly Summary</button>
-      <button data-page="ytd" aria-controls="page-ytd">Year-to-Date</button>
-      <button data-page="settings" aria-controls="page-settings">Settings</button>
+      <button data-page="entry" aria-controls="page-entry">📝 Daily Entry</button>
+      <button data-page="summary" aria-controls="page-summary">📅 Weekly Summary</button>
+      <button data-page="ytd" aria-controls="page-ytd">📊 Year-to-Date</button>
+      <button data-page="settings" aria-controls="page-settings">⚙️ Settings</button>
     </nav>
 
     <!-- Script -->
