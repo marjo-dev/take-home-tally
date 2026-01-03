@@ -1,6 +1,6 @@
 // Restaurant Income Tracker Service Worker
 // Update CACHE_VERSION when you deploy new features to force cache refresh
-const CACHE_VERSION = 'v2.2.6';
+const CACHE_VERSION = 'v2.2.7';
 const CACHE_NAME = `income-tracker-${CACHE_VERSION}`;
 const ASSETS = [
   './',
