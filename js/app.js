@@ -11,7 +11,7 @@ import { toISO } from "./utils.js";
 
 // UI
 import { syncYtdLabels, refreshWeekTable } from "./ui/renderers.js";
-import { showModal } from "./ui/modal.js";
+import { showModal, showToast } from "./ui/modal.js";
 import { applyTheme } from "./ui/theme.js";
 import { initNavigation } from "./ui/navigation.js";
 import { initToggles } from "./ui/toggles.js";
@@ -51,8 +51,46 @@ function handleEditRole(roleName, roleRate) {
   }
 }
 
+// Initialize blocking year-end modal
+function initYearEndModal() {
+  const modal = document.getElementById("year-end-modal");
+  const closeBtn = document.getElementById("year-end-modal-close");
+
+  if (!modal || !closeBtn) return;
+
+  // Show modal immediately
+  modal.classList.remove("hidden");
+
+  // Prevent interaction with the rest of the app
+  document.body.style.overflow = "hidden";
+
+  // Handle close button
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+  });
+
+  // Prevent closing by clicking outside or pressing Escape
+  // This is a blocking modal that requires explicit acknowledgment
+  modal.addEventListener("click", (e) => {
+    // Only allow closing via the button, not by clicking the overlay
+    e.stopPropagation();
+  });
+
+  // Prevent Escape key from closing (requires explicit button click)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, { capture: true });
+}
+
 // Initialize app
 document.addEventListener("DOMContentLoaded", async () => {
+  // Show blocking modal first
+  initYearEndModal();
+
   try {
     await initStorage();
     const storedSettings = await loadSettings();
@@ -201,6 +239,9 @@ function setupEventHandlers() {
       if (roleEl) roleEl.selectedIndex = 0; // Reset to placeholder
 
       currentMonthFilter = refreshWeekTable(entries, settings, currentMonthFilter);
+
+      // Show success feedback
+      showToast("Daily entry added successfully!");
     });
   }
 

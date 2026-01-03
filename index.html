@@ -448,6 +448,27 @@
       <button data-page="settings" aria-controls="page-settings">⚙️ Settings</button>
     </nav>
 
+    <!-- Year-End Blocking Modal -->
+    <div id="year-end-modal" class="blocking-modal-overlay">
+      <div class="blocking-modal">
+        <div class="blocking-modal-content">
+          <h2>📅 Important: Year-End Data Management</h2>
+          <div class="year-end-message">
+            <p><strong>It's time to prepare for the 2026 fiscal year!</strong></p>
+            <p>Before continuing, please:</p>
+            <ol>
+              <li><strong>Save your 2025 income data</strong> by going to <strong>Settings → Backup / Restore</strong> and clicking <strong>"Backup Data"</strong>. You can also export your data to a spreadsheet by clicking <strong>"Export Data"</strong>. You can save your backup files to your cloud storage, or email them to yourself for your own records.</li>
+              <li>After backing up, <strong>reset the app</strong> using the <strong>"Reset All Data"</strong> button to start fresh for 2026. You only need to do this once.</li>
+              <li>If you worked earlier this week 12/30-12/31, make note of your shift entries on those days and enter them again after you reset the app. This makes sure that your paycheck calculations are accurate for the week of 12/30/25-01/03/26.</li>
+              <li>After resetting the app, make sure your settings such as hourly rate and retirement deductions are set correctly for 2026.</li>
+            </ol>
+            <p class="muted">This message will stay up for the first week of 2026. If you have any questions, feel free to text or call me 😁. Happy New Year!</p>
+          </div>
+        </div>
+        <button id="year-end-modal-close" class="blocking-modal-close">I Understand</button>
+      </div>
+    </div>
+
     <!-- Script -->
     <script type="module" src="js/app.js"></script>
   </body>

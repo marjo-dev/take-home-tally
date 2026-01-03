@@ -802,6 +802,119 @@ label.button-label:hover {
 .modal-close:hover {
   background: var(--button-bg-hover);
 }
+
+/* Blocking Modal Styles - Year-End Notice */
+.blocking-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: color-mix(in srgb, #000000 75%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999 !important;
+  backdrop-filter: blur(8px);
+  margin: 0 !important;
+  padding: 16px !important;
+  pointer-events: auto;
+}
+
+.blocking-modal-overlay.hidden {
+  display: none !important;
+}
+
+.blocking-modal {
+  background: var(--card-bg);
+  border: 2px solid var(--button-bg);
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+  min-width: 300px;
+  max-width: min(600px, 90vw);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.blocking-modal-content {
+  padding: 32px 24px 24px 24px;
+  color: var(--text);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.blocking-modal-content h2 {
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.year-end-message {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.year-end-message p {
+  margin: 12px 0;
+}
+
+.year-end-message ol {
+  margin: 16px 0;
+  padding-left: 24px;
+}
+
+.year-end-message li {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.year-end-message strong {
+  color: var(--button-bg);
+  font-weight: 600;
+}
+
+.blocking-modal-close {
+  margin: 0 24px 24px 24px;
+  padding: 14px 28px;
+  background: var(--button-bg);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--button-bg) 40%, transparent);
+}
+
+.blocking-modal-close:hover {
+  background: var(--button-bg-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--button-bg) 50%, transparent);
+}
+
+.blocking-modal-close:active {
+  transform: translateY(0);
+}
+
 .muted {
   color: var(--muted);
   font-size: 0.85rem;
@@ -2308,4 +2421,47 @@ body.theme-light .theme-toggle {
 body.theme-light .theme-toggle:hover {
   background: var(--ghost-hover);
   border-color: var(--button-bg);
+}
+
+/* Toast Notification Styles */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  z-index: 100000;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.toast-content {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border-strong);
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  max-width: min(400px, 90vw);
+  backdrop-filter: blur(8px);
+}
+
+.toast-content::before {
+  content: "✓";
+  color: #10b981;
+  font-size: 1.2rem;
+  font-weight: bold;
+  flex-shrink: 0;
 }
